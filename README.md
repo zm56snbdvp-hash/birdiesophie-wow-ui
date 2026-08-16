@@ -4,7 +4,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 ## Status
 
-The repository currently contains the architecture and handoff baseline. The layout uses **3840 × 1080 / 32:9 provisionally** until the exact native in-game resolution and UI scale are confirmed.
+The repository currently contains the architecture and handoff baseline. Screenshot evidence indicates a likely **3840 × 1600 / 2.4:1** display, but the exact native in-game resolution and UI scale remain unconfirmed until the `0.1.1` runtime detector is read back in game.
 
 ## Goals
 

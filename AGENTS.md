@@ -5,7 +5,7 @@
 - Project: Birdiesophie — Birdie & Breakfast WoW UI
 - Game: World of Warcraft: The Burning Crusade Classic
 - Character: Birdiesophie, female Night Elf Druid
-- Working canvas: 3840 × 1080 / 32:9, provisional
+- Working canvas: likely 3840 × 1600 / 2.4:1 from screenshot evidence; runtime confirmation pending
 
 ## System of record
 
@@ -36,4 +36,3 @@
 - Project folder: https://drive.google.com/drive/folders/1xCVTUIll85Athnh53l_FWzHWzJGJxkjF
 - Master briefing: https://docs.google.com/document/d/1FwC3Rdk9eUCuuobVDP8JWn4AFk1c_7bhLmxVg_rbQUk/edit
 - Technical build spec: https://docs.google.com/document/d/1fLUB47yeXoN5DCvnCsLPPmaSNQ9QGHV7XfB-_UfBhmM/edit
-

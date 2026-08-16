@@ -2,10 +2,10 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.1.0"
+BSUI.version = "0.1.1"
 BSUI.display = {
-  width = 3840,
-  height = 1080,
+  width = nil,
+  height = nil,
   provisional = true,
   safeCombatWidth = 1600,
 }
@@ -44,10 +44,79 @@ local function DependencyState()
   }
 end
 
+local function ReadResolutionCVar(name)
+  if type(GetCVar) ~= "function" then
+    return nil, nil
+  end
+
+  local ok, value = pcall(GetCVar, name)
+  if not ok or type(value) ~= "string" then
+    return nil, nil
+  end
+
+  local width, height = string.match(value, "(%d+)%D+(%d+)")
+  return tonumber(width), tonumber(height)
+end
+
+local function PhysicalScreenSize()
+  if type(GetPhysicalScreenSize) == "function" then
+    local width, height = GetPhysicalScreenSize()
+    if width and height and width > 0 and height > 0 then
+      return width, height, "physical API"
+    end
+  end
+
+  local width, height = ReadResolutionCVar("gxWindowedResolution")
+  if not width or not height then
+    width, height = ReadResolutionCVar("gxResolution")
+  end
+
+  if width and height then
+    return width, height, "graphics CVar"
+  end
+
+  return nil, nil, "UI fallback"
+end
+
+local function RefreshDisplayState()
+  local physicalWidth, physicalHeight, source = PhysicalScreenSize()
+  local uiWidth, uiHeight = UIParent:GetSize()
+  local effectiveScale = UIParent:GetEffectiveScale()
+
+  BSUI.display.width = physicalWidth or math.floor((uiWidth * effectiveScale) + 0.5)
+  BSUI.display.height = physicalHeight or math.floor((uiHeight * effectiveScale) + 0.5)
+  BSUI.display.uiWidth = uiWidth
+  BSUI.display.uiHeight = uiHeight
+  BSUI.display.effectiveScale = effectiveScale
+  BSUI.display.source = source
+  BSUI.display.provisional = physicalWidth == nil or physicalHeight == nil
+
+  BirdieSophieUIDB.lastDisplay = {
+    width = BSUI.display.width,
+    height = BSUI.display.height,
+    uiWidth = uiWidth,
+    uiHeight = uiHeight,
+    effectiveScale = effectiveScale,
+    source = source,
+    provisional = BSUI.display.provisional,
+  }
+
+  return BSUI.display
+end
+
+local function ShowScreen()
+  local display = RefreshDisplayState()
+  local aspect = display.height > 0 and (display.width / display.height) or 0
+
+  Print(string.format("Screen: %dx%d (%s)%s", display.width, display.height, display.source, display.provisional and " — provisional" or ""))
+  Print(string.format("UIParent: %.0fx%.0f, effective scale %.3f, aspect %.3f:1", display.uiWidth, display.uiHeight, display.effectiveScale, aspect))
+end
+
 local function ShowStatus()
   local deps = DependencyState()
+  local display = RefreshDisplayState()
   Print("UI v" .. BSUI.version .. " — WELCOME TO THE CLUBHOUSE.")
-  Print("Canvas: " .. BSUI.display.width .. "x" .. BSUI.display.height .. (BSUI.display.provisional and " (provisional)" or ""))
+  Print("Canvas: " .. display.width .. "x" .. display.height .. (display.provisional and " (provisional)" or "") .. " via " .. display.source)
   Print("ElvUI: " .. (deps.ElvUI and "ready" or "missing") .. ", WeakAuras: " .. (deps.WeakAuras and "ready" or "missing") .. ", Details!: " .. (deps.Details and "ready" or "missing"))
 end
 
@@ -59,12 +128,18 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
     return
   end
 
-  Print("Commands: /bsui status")
+  if command == "screen" then
+    ShowScreen()
+    return
+  end
+
+  Print("Commands: /bsui status, /bsui screen")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
   if event == "ADDON_LOADED" and loadedAddon == addonName then
-    BirdieSophieUIDB.version = BirdieSophieUIDB.version or BSUI.version
+    BirdieSophieUIDB.version = BSUI.version
+    RefreshDisplayState()
   elseif event == "PLAYER_LOGIN" then
     Print("NEXT TEE → /bsui status")
   end
