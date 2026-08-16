@@ -1,0 +1,30 @@
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Local and sensitive WoW data
+WTF/
+Cache/
+Logs/
+Screenshots/
+*.bak
+*.tmp
+
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Archives are kept only in backups/ when intentionally versioned
+*.zip
+*.7z
+*.rar
+!backups/**/*.zip
+

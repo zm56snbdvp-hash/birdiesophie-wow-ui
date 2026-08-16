@@ -1,0 +1,11 @@
+## Interface: 20505
+## Title: BirdieSophieUI
+## Notes: Birdie & Breakfast interface companion for Birdiesophie
+## Author: Birdie & Breakfast
+## Version: 0.1.0
+## RequiredDeps: ElvUI
+## OptionalDeps: WeakAuras, Details
+## SavedVariables: BirdieSophieUIDB
+
+Core.lua
+

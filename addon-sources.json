@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "game": "World of Warcraft: The Burning Crusade Classic Anniversary",
+  "client_folder": "_anniversary_",
+  "manager": {
+    "name": "WowUp",
+    "homepage": "https://wowup.io/",
+    "reason": "Supports CurseForge, TukUI and tagged GitHub releases in one manager"
+  },
+  "addons": [
+    {
+      "name": "ElvUI",
+      "required": true,
+      "provider": "TukUI",
+      "url": "https://tukui.org/elvui"
+    },
+    {
+      "name": "WeakAuras",
+      "required": true,
+      "provider": "CurseForge",
+      "url": "https://www.curseforge.com/wow/addons/weakauras-2"
+    },
+    {
+      "name": "Details! Damage Meter",
+      "required": true,
+      "provider": "CurseForge",
+      "url": "https://www.curseforge.com/wow/addons/details"
+    },
+    {
+      "name": "BirdieSophieUI",
+      "required": true,
+      "provider": "GitHub Release",
+      "url": "https://github.com/zm56snbdvp-hash/birdiesophie-wow-ui"
+    }
+  ]
+}
