@@ -1,0 +1,44 @@
+name: Tag BirdieSophieUI Version
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "addon/BirdieSophieUI/**"
+      - ".github/workflows/tag-addon-version.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read addon version
+        id: version
+        shell: bash
+        run: |
+          version="$(awk -F': ' '/^## Version:/{print $2; exit}' addon/BirdieSophieUI/BirdieSophieUI.toc | tr -d '\r')"
+          test -n "$version"
+          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Create version tag when missing
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "$TAG already exists"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "BirdieSophieUI $TAG"
+          git push origin "$TAG"
+

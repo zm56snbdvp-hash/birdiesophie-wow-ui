@@ -11,3 +11,4 @@ All meaningful profile and architecture changes are recorded here.
 - Added the installable BirdieSophieUI companion addon scaffold.
 - Added a WowUp/TukUI/CurseForge provider manifest and environment validator.
 - Added automated GitHub Release packaging for addon-manager updates.
+- Added automatic semantic version tagging from the addon TOC on `main`.
