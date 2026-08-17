@@ -2,7 +2,7 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.6.0"
+BSUI.version = "0.7.0-dev"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -109,6 +109,8 @@ local function RefreshDisplayState()
   return BSUI.display
 end
 
+BSUI.RefreshDisplayState = RefreshDisplayState
+
 local function ShowScreen()
   local display = RefreshDisplayState()
   local aspect = display.height > 0 and (display.width / display.height) or 0
@@ -170,6 +172,17 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
     return
   end
 
+
+  if command == "qa" and BSUI.RunVisualQA then
+    BSUI.RunVisualQA()
+    return
+  end
+
+  if command == "artcheck" and BSUI.ToggleArtCheck then
+    BSUI.ToggleArtCheck()
+    return
+  end
+
   if command == "modules" and BSUI.ShowModules then
     BSUI.ShowModules()
     return
@@ -180,7 +193,7 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
     return
   end
 
-  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest")
+  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest, qa, artcheck")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)

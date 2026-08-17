@@ -23,6 +23,8 @@ function Frame:SetSize(width, height) self.width, self.height = width, height en
 function Frame:GetWidth() return self.width or 0 end
 function Frame:GetHeight() return self.height or 0 end
 function Frame:GetSize() return self:GetWidth(), self:GetHeight() end
+function Frame:GetLeft() return self.left end
+function Frame:GetBottom() return self.bottom end
 function Frame:GetName() return self.name end
 function Frame:GetParent() return self.parent end
 function Frame:SetAllPoints() end
@@ -121,9 +123,10 @@ for _, path in ipairs({
   "addon/BirdieSophieUI/Layout.lua", "addon/BirdieSophieUI/Theme.lua", "addon/BirdieSophieUI/CombatCore.lua",
   "addon/BirdieSophieUI/Mouseover.lua", "addon/BirdieSophieUI/Leveling.lua", "addon/BirdieSophieUI/Bag.lua",
   "addon/BirdieSophieUI/Alerts.lua",
+  "addon/BirdieSophieUI/Diagnostics.lua",
 }) do assert(loadfile(path))("BirdieSophieUI", BSUI) end
 
-assert(BSUI.version == "0.6.0")
+assert(BSUI.version == "0.7.0-dev")
 BSUI.InitializeLayout()
 SlashCmdList.BIRDIESOPHIEUI("install")
 BSUI.RefreshState()
@@ -140,6 +143,12 @@ assert(frames.BirdieSophieCombatCore.coinCount == 3)
 assert(frames.BirdieSophieMouseoverCaddie.shown == true)
 assert(frames.BirdieSophieLevelCaddie.shown == true)
 assert(frames.BirdieSophieUtilityBag.shown == true)
+SlashCmdList.BIRDIESOPHIEUI("qa")
+assert(type(BSUI.GetVisualQASnapshot()) == "table")
+SlashCmdList.BIRDIESOPHIEUI("artcheck")
+assert(frames.BirdieSophieArtCheck.shown == true)
+SlashCmdList.BIRDIESOPHIEUI("artcheck")
+assert(frames.BirdieSophieArtCheck.shown == false)
 SlashCmdList.BIRDIESOPHIEUI("module mouseover off")
 assert(BirdieSophieUIDB.modules.mouseover == false and frames.BirdieSophieMouseoverCaddie.shown == false)
 SlashCmdList.BIRDIESOPHIEUI("alerttest")
@@ -152,4 +161,4 @@ assert(frames.ChatFrame1.width == 300 and frames.ChatFrame1.height == 180)
 engine.db.movers = nil
 assert(BSUI.ApplyClubhouseLayout() == true)
 assert(type(engine.db.movers) == "table" and engine.db.movers.ElvUF_PlayerMover ~= nil)
-print("BirdieSophieUI v0.6.0 mock runtime PASS")
+print("BirdieSophieUI v0.7.0-dev mock runtime PASS")

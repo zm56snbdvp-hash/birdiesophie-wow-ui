@@ -232,6 +232,16 @@ local function DecorateElvUI()
   Decorate(_G.ElvUI_Bar3, 9, 9, "bar")
 end
 
+function BSUI.RefreshElvDecorations()
+  DecorateElvUI()
+end
+
+function BSUI.GetThemedFrameCount()
+  local count = 0
+  for _ in pairs(themedFrames) do count = count + 1 end
+  return count
+end
+
 function BSUI.RefreshClubhouseTheme()
   BuildShell()
   local enabled = BirdieSophieUIDB.themeEnabled ~= false
@@ -256,6 +266,8 @@ end
 
 local events = CreateFrame("Frame")
 events:RegisterEvent("PLAYER_LOGIN")
+events:RegisterEvent("PLAYER_ENTERING_WORLD")
+events:RegisterEvent("UI_SCALE_CHANGED")
 events:RegisterEvent("PLAYER_REGEN_DISABLED")
 events:RegisterEvent("PLAYER_REGEN_ENABLED")
 events:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
@@ -265,7 +277,15 @@ events:SetScript("OnEvent", function(_, event, unit)
     if BirdieSophieUIDB.themeEnabled == nil then BirdieSophieUIDB.themeEnabled = true end
     if C_Timer and C_Timer.After then
       C_Timer.After(1, BSUI.RefreshClubhouseTheme)
+      C_Timer.After(3, BSUI.RefreshElvDecorations)
       C_Timer.After(2, MovePeripheralFrames)
+    else
+      BSUI.RefreshClubhouseTheme()
+    end
+  elseif event == "PLAYER_ENTERING_WORLD" or event == "UI_SCALE_CHANGED" then
+    if C_Timer and C_Timer.After then
+      C_Timer.After(0.2, BSUI.RefreshClubhouseTheme)
+      C_Timer.After(1.5, BSUI.RefreshElvDecorations)
     else
       BSUI.RefreshClubhouseTheme()
     end

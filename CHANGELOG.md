@@ -2,6 +2,13 @@
 
 All meaningful profile and architecture changes are recorded here.
 
+## 0.7.0-dev — unreleased
+
+- Add `/bsui qa` for an exact in-game visual snapshot: physical canvas, UIParent, scale, profile state, decoration count and the dimensions/anchors of the real ElvUI and Birdie frames.
+- Add `/bsui artcheck`, a temporary material board that renders the Clubhouse surface, brass corner, B&B seal and Birdie Coin from their installed addon paths.
+- Retry theme attachment after world entry and UI-scale changes so late-created ElvUI frames receive their Clubhouse surrounds without moving protected frames.
+- Keep the stable `0.6.0` release and public latest ZIP unchanged while this candidate is validated.
+
 ## 0.6.0 — 2026-08-17
 
 - Replace the former one-pixel debug aesthetic with a custom Birdie & Breakfast material system: dark forest leather/wood texture, subtle golf-ball dimples, layered brass rails, ornamental leaf corners, Birdie Coins and a rendered B&B Night Tee seal.

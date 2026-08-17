@@ -6,7 +6,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
 
-Version `0.6.0` is the **Deep Clubhouse Design** pass. It keeps the event-driven Caddie foundation while replacing the former thin debug geometry with custom forest-leather surfaces, layered brass frames, 3D portrait unit frames, larger action rows, Birdie Coin combo points, premium HoT/debuff scorecards and a rendered B&B Night Tee seal. All changed ElvUI settings and peripheral positions remain reversible.
+The stable release remains `0.6.0` (**Deep Clubhouse Design**). The isolated `0.7.0-dev` branch adds visual QA telemetry without changing the stable download: `/bsui qa` reports exact live frame sizes/anchors and `/bsui artcheck` verifies all four custom media assets in game. All changed ElvUI settings and peripheral positions remain reversible.
 
 ## Goals
 
@@ -48,6 +48,8 @@ Addon versions must be validated against the installed TBC Classic client before
 - `/bsui alerttest` — show the CC and target-scorecard test state for five seconds
 - `/bsui modules` — list the six independently switchable Caddie modules
 - `/bsui module <name> on|off|toggle` — control `core`, `mouseover`, `stealth`, `leveling`, `caddie` or `bag`
+- `/bsui qa` — print the exact physical canvas, UIParent, profile and live frame geometry used for measured visual tuning
+- `/bsui artcheck` — display the four custom Clubhouse media assets for an immediate missing-texture check
 
 ## Next build gate
 
