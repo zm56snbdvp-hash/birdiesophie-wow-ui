@@ -6,7 +6,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
 
-Version `0.3.0` turns the reversible layout into a live **Birdie Command Deck**: branded scorecard framing, form-aware accents, combat dimming, central control-loss warnings and a target-debuff scorecard for Druid PvP.
+Version `0.3.1` delivers the live **Birdie Command Deck** with a Classic-ElvUI handshake hotfix: branded scorecard framing, form-aware accents, combat dimming, central control-loss warnings and a target-debuff scorecard for Druid PvP.
 
 ## Goals
 

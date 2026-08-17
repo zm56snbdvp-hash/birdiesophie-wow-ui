@@ -142,13 +142,24 @@ local function BuildPreview()
 end
 
 local function ElvEngine()
-  if type(ElvUI) ~= "table" then
-    return nil
+  if type(_G.ElvUI) ~= "table" then
+    return nil, "ElvUI global missing"
   end
 
-  local engine = ElvUI[1]
-  if not engine or not engine.db or not engine.db.movers then
-    return nil
+  local engine = _G.ElvUI[1]
+  if type(engine) ~= "table" then
+    return nil, "ElvUI engine missing"
+  end
+
+  if type(engine.db) ~= "table" then
+    return nil, "ElvUI profile database pending"
+  end
+
+  -- Some Classic ElvUI profiles do not materialize the mover table until
+  -- edit mode has been opened once. Creating the empty profile table is the
+  -- supported equivalent and lets SetMoverPoints own the actual frame update.
+  if type(engine.db.movers) ~= "table" then
+    engine.db.movers = {}
   end
 
   return engine
@@ -223,9 +234,9 @@ function BSUI.ApplyClubhouseLayout()
     return false
   end
 
-  local engine = ElvEngine()
+  local engine, reason = ElvEngine()
   if not engine then
-    Print("ElvUI layout engine is not ready.")
+    Print("ElvUI layout engine is not ready: " .. (reason or "unknown") .. ".")
     return false
   end
 

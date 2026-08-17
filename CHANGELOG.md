@@ -2,7 +2,12 @@
 
 All meaningful profile and architecture changes are recorded here.
 
-## 0.3.0 — Unreleased
+## 0.3.1 — Unreleased
+
+- Fix `/bsui install` on Classic ElvUI profiles whose mover table has not been materialized by edit mode yet.
+- Add a precise readiness reason when the ElvUI global, engine or profile database is genuinely unavailable.
+
+## 0.3.0 — 2026-08-17
 
 - Add the live Birdie Command Deck shell with translucent forest panels, champagne scorecard lines and a discreet B&B Night Tee signature.
 - Add form-aware accent state for Cat, Bear, Travel, Aquatic and caster forms.
