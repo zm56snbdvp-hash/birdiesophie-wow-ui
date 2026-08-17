@@ -110,7 +110,10 @@ local engine = {
 }
 ElvUI = { engine }
 
-for _, name in ipairs({ "ElvUF_Player", "ElvUF_Target", "ElvUF_Focus", "ElvUI_Bar1", "ElvUI_Bar2", "ElvUI_Bar3" }) do CreateFrame("Frame", name) end
+for _, name in ipairs({ "ElvUF_Player", "ElvUF_Target", "ElvUF_Focus", "ElvUF_TargetCastbar", "ElvUI_Bar1", "ElvUI_Bar2", "ElvUI_Bar3" }) do CreateFrame("Frame", name) end
+for bar = 1, 3 do
+  for index = 1, 10 do CreateFrame("Button", string.format("ElvUI_Bar%dButton%d", bar, index)) end
+end
 for _, name in ipairs({ "ChatFrame1", "DetailsBaseFrame1" }) do
   local peripheral = CreateFrame("Frame", name, UIParent)
   peripheral:SetPoint("CENTER", UIParent, "CENTER", 10, 20)
@@ -144,6 +147,8 @@ assert(frames.BirdieSophieCombatCore.coinCount == 3)
 assert(frames.BirdieSophieMouseoverCaddie.shown == true)
 assert(frames.BirdieSophieLevelCaddie.shown == true)
 assert(frames.BirdieSophieUtilityBag.shown == true)
+assert(BSUI.GetThemedFrameCount() >= 7)
+assert(BSUI.GetThemedButtonCount() == 30)
 SlashCmdList.BIRDIESOPHIEUI("qa")
 assert(type(BSUI.GetVisualQASnapshot()) == "table")
 SlashCmdList.BIRDIESOPHIEUI("artcheck")

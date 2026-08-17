@@ -5,6 +5,7 @@ BSUI.media = {
   corner = "Interface\\AddOns\\BirdieSophieUI\\Media\\clubhouse-corner.tga",
   seal = "Interface\\AddOns\\BirdieSophieUI\\Media\\birdie-seal.tga",
   coin = "Interface\\AddOns\\BirdieSophieUI\\Media\\birdie-coin.tga",
+  portraitBezel = "Interface\\AddOns\\BirdieSophieUI\\Media\\portrait-bezel.tga",
 }
 
 BSUI.fonts = {

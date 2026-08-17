@@ -5,6 +5,7 @@ local shell
 local formBadge
 local combatLabel
 local themedFrames = {}
+local themedButtons = {}
 local peripheralTargets = {
   ChatFrame1 = { "BOTTOMLEFT", "BOTTOMLEFT", 36, 50, 454, 214 },
   DetailsBaseFrame1 = { "BOTTOMRIGHT", "BOTTOMRIGHT", -36, 50, 454, 214 },
@@ -41,7 +42,7 @@ local function CreatePanel(name, point, relativePoint, x, y, width, height, titl
   return panel
 end
 
-local function Decorate(frame, padX, padY, kind)
+local function Decorate(frame, padX, padY, kind, role)
   if not frame or themedFrames[frame] then return end
   local accent = CreateFrame("Frame", nil, frame)
   accent:SetFrameStrata("LOW")
@@ -59,8 +60,83 @@ local function Decorate(frame, padX, padY, kind)
     score:SetPoint("BOTTOMRIGHT", accent, "BOTTOMRIGHT", -16, 10)
     score:SetHeight(2)
     score:SetColorTexture(Color("champagne", 0.58))
+
+    if role == "player" or role == "target" then
+      local bezel = accent:CreateTexture(nil, "OVERLAY", nil, 4)
+      bezel:SetTexture(BSUI.media.portraitBezel)
+      bezel:SetSize(132, 132)
+      if role == "player" then
+        bezel:SetPoint("LEFT", accent, "LEFT", -7, 0)
+      else
+        bezel:SetPoint("RIGHT", accent, "RIGHT", 7, 0)
+      end
+      bezel:SetAlpha(0.96)
+      accent.portraitBezel = bezel
+
+      local instrumentGlow = accent:CreateTexture(nil, "ARTWORK", nil, 2)
+      instrumentGlow:SetSize(104, 104)
+      instrumentGlow:SetPoint(role == "player" and "LEFT" or "RIGHT", accent, role == "player" and "LEFT" or "RIGHT", role == "player" and 7 or -7, 0)
+      instrumentGlow:SetColorTexture(Color(role == "player" and "moonlight" or "champagne", 0.07))
+      accent.instrumentGlow = instrumentGlow
+    end
+  elseif kind == "cast" then
+    local plaque = Art.CreateText(accent, "OVERLAY", 10, "title", "OUTLINE")
+    plaque:SetPoint("BOTTOM", accent, "TOP", 0, 4)
+    plaque:SetText("RIVAL CAST")
+    plaque:SetTextColor(Color("champagne", 0.88))
+    accent.castPlaque = plaque
   end
   themedFrames[frame] = accent
+end
+
+local function AddButtonEdge(button, index, side, inset, thickness, alpha)
+  button.bsuiButtonEdges = button.bsuiButtonEdges or {}
+  local edge = button:CreateTexture(nil, "OVERLAY", nil, index)
+  edge:SetColorTexture(Color("champagne", alpha))
+  if side == "TOP" then
+    edge:SetPoint("TOPLEFT", button, "TOPLEFT", inset, -inset)
+    edge:SetPoint("TOPRIGHT", button, "TOPRIGHT", -inset, -inset)
+    edge:SetHeight(thickness)
+  elseif side == "BOTTOM" then
+    edge:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", inset, inset)
+    edge:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -inset, inset)
+    edge:SetHeight(thickness)
+  elseif side == "LEFT" then
+    edge:SetPoint("TOPLEFT", button, "TOPLEFT", inset, -inset)
+    edge:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", inset, inset)
+    edge:SetWidth(thickness)
+  else
+    edge:SetPoint("TOPRIGHT", button, "TOPRIGHT", -inset, -inset)
+    edge:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -inset, inset)
+    edge:SetWidth(thickness)
+  end
+  button.bsuiButtonEdges[index] = edge
+end
+
+local function DecorateButton(button)
+  if not button or themedButtons[button] then return end
+  local wash = button:CreateTexture(nil, "BACKGROUND")
+  wash:SetPoint("TOPLEFT", button, "TOPLEFT", -2, 2)
+  wash:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
+  wash:SetColorTexture(Color("forest", 0.20))
+  for pass = 0, 1 do
+    local inset = pass == 0 and 0 or 3
+    local thickness = pass == 0 and 2 or 1
+    local alpha = pass == 0 and 0.94 or 0.34
+    AddButtonEdge(button, 1 + (pass * 4), "TOP", inset, thickness, alpha)
+    AddButtonEdge(button, 2 + (pass * 4), "BOTTOM", inset, thickness, alpha)
+    AddButtonEdge(button, 3 + (pass * 4), "LEFT", inset, thickness, alpha)
+    AddButtonEdge(button, 4 + (pass * 4), "RIGHT", inset, thickness, alpha)
+  end
+  themedButtons[button] = true
+end
+
+local function DecorateActionButtons()
+  for bar = 1, 3 do
+    for index = 1, 12 do
+      DecorateButton(_G[string.format("ElvUI_Bar%dButton%d", bar, index)])
+    end
+  end
 end
 
 local formColors = {
@@ -224,21 +300,33 @@ local function BuildShell()
 end
 
 local function DecorateElvUI()
-  Decorate(_G.ElvUF_Player, 13, 13, "unit")
-  Decorate(_G.ElvUF_Target, 13, 13, "unit")
+  if type(InCombatLockdown) == "function" and InCombatLockdown() then return false end
+  Decorate(_G.ElvUF_Player, 13, 13, "unit", "player")
+  Decorate(_G.ElvUF_Target, 13, 13, "unit", "target")
   Decorate(_G.ElvUF_Focus, 9, 9, "unit")
   Decorate(_G.ElvUI_Bar1, 10, 10, "bar")
   Decorate(_G.ElvUI_Bar2, 10, 10, "bar")
   Decorate(_G.ElvUI_Bar3, 9, 9, "bar")
+  local targetCastbar = _G.ElvUF_TargetCastbar or (_G.ElvUF_Target and _G.ElvUF_Target.Castbar)
+  Decorate(targetCastbar, 10, 8, "cast")
+  DecorateActionButtons()
+  return true
 end
 
 function BSUI.RefreshElvDecorations()
-  DecorateElvUI()
+  if BirdieSophieUIDB.themeEnabled == false then return false end
+  return DecorateElvUI()
 end
 
 function BSUI.GetThemedFrameCount()
   local count = 0
   for _ in pairs(themedFrames) do count = count + 1 end
+  return count
+end
+
+function BSUI.GetThemedButtonCount()
+  local count = 0
+  for _ in pairs(themedButtons) do count = count + 1 end
   return count
 end
 
@@ -289,6 +377,8 @@ events:SetScript("OnEvent", function(_, event, unit)
     else
       BSUI.RefreshClubhouseTheme()
     end
+  elseif event == "PLAYER_REGEN_ENABLED" then
+    BSUI.RefreshClubhouseTheme()
   elseif event == "UPDATE_SHAPESHIFT_FORM" then
     UpdateForm()
   elseif event ~= "UNIT_HEALTH" or unit == "player" then

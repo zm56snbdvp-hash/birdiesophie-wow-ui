@@ -8,6 +8,8 @@ All meaningful profile and architecture changes are recorded here.
 - Add `/bsui artcheck`, a temporary material board that renders the Clubhouse surface, brass corner, B&B seal and Birdie Coin from their installed addon paths.
 - Retry theme attachment after world entry and UI-scale changes so late-created ElvUI frames receive their Clubhouse surrounds without moving protected frames.
 - Recompose the cockpit from the first native v0.6 screenshot: separate the player and target instruments, shrink the central status rail so it no longer covers them, enlarge the curated action rows, move Mouseover/HôT cards to mirrored upper corners and suppress the redundant self-mouseover card.
+- Add an original transparent Night-Elf Clubhouse portrait bezel, generated specifically from the current in-game implementation and approved concept direction, and attach it to the outer portrait edge of the player and target instruments.
+- Give each visible curated action button its own quiet double-brass frame and add a dedicated `RIVAL CAST` instrument surround without changing clicks, bindings or protected action behavior.
 - Keep the stable `0.6.0` release and public latest ZIP unchanged while this candidate is validated.
 
 ## 0.6.0 — 2026-08-17

@@ -100,6 +100,7 @@ function BSUI.GetVisualQASnapshot()
     theme = BirdieSophieUIDB.themeEnabled ~= false,
     runtime = BirdieSophieUIDB.runtimeActive ~= false,
     decorated = BSUI.GetThemedFrameCount and BSUI.GetThemedFrameCount() or 0,
+    decoratedButtons = BSUI.GetThemedButtonCount and BSUI.GetThemedButtonCount() or 0,
     frames = {},
   }
   for _, entry in ipairs(qaFrames) do
@@ -112,7 +113,7 @@ function BSUI.RunVisualQA()
   if BSUI.RefreshElvDecorations then BSUI.RefreshElvDecorations() end
   local qa = BSUI.GetVisualQASnapshot()
   Print(string.format("QA %s | physical %dx%d | UIParent %.0fx%.0f @ %.3f", qa.version, qa.physicalWidth, qa.physicalHeight, qa.uiWidth, qa.uiHeight, qa.scale))
-  Print(string.format("Profile: %s | theme %s | runtime %s | %d ElvUI frames decorated", qa.profile, qa.theme and "on" or "off", qa.runtime and "on" or "off", qa.decorated))
+  Print(string.format("Profile: %s | theme %s | runtime %s | %d frames + %d buttons decorated", qa.profile, qa.theme and "on" or "off", qa.runtime and "on" or "off", qa.decorated, qa.decoratedButtons))
   for _, frame in ipairs(qa.frames) do Print(SnapshotLine(frame)) end
   Print("Send this chat block with one native screenshot; it gives exact offsets instead of visual guesswork.")
   return qa
@@ -141,7 +142,7 @@ local function BuildArtCheck()
   if artCheck then return artCheck end
   artCheck = CreateFrame("Frame", "BirdieSophieArtCheck", UIParent)
   artCheck:SetPoint("CENTER", UIParent, "CENTER", 0, 40)
-  artCheck:SetSize(820, 390)
+  artCheck:SetSize(980, 390)
   artCheck:SetFrameStrata("DIALOG")
   artCheck:EnableMouse(true)
   Art.ApplyPanel(artCheck, { washAlpha = 0.24, edgeAlpha = 0.98, cornerSize = 38 })
@@ -149,13 +150,14 @@ local function BuildArtCheck()
 
   local hint = Art.CreateText(artCheck, "OVERLAY", 11, "body", "OUTLINE")
   hint:SetPoint("TOP", artCheck, "TOP", 0, -48)
-  hint:SetText("All four tiles should render. Pink/green means the addon media path is broken.")
+  hint:SetText("All five tiles should render. Pink/green means the addon media path is broken.")
   hint:SetTextColor(Color("cream", 0.72))
 
   AddSample(artCheck, "TOPLEFT", 28, "CLUBHOUSE SURFACE", BSUI.media.surface, "surface")
   AddSample(artCheck, "TOPLEFT", 218, "BRASS LEAF CORNER", BSUI.media.corner)
   AddSample(artCheck, "TOPLEFT", 408, "B&B NIGHT TEE SEAL", BSUI.media.seal)
   AddSample(artCheck, "TOPLEFT", 598, "BIRDIE COIN", BSUI.media.coin)
+  AddSample(artCheck, "TOPLEFT", 788, "PORTRAIT BEZEL", BSUI.media.portraitBezel)
 
   local footer = Art.CreateText(artCheck, "OVERLAY", 12, "title", "OUTLINE")
   footer:SetPoint("BOTTOM", artCheck, "BOTTOM", 0, 26)
@@ -176,7 +178,7 @@ function BSUI.ToggleArtCheck()
   end
 
   frame:Show()
-  Print("Material check open: surface, corner, seal and coin must all be visible.")
+  Print("Material check open: surface, corner, seal, coin and portrait bezel must all be visible.")
   if C_Timer and C_Timer.After then
     C_Timer.After(12, function()
       if token == artCheckToken and frame:IsShown() then frame:Hide() end

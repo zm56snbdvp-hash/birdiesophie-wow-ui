@@ -6,7 +6,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
 
-The stable release remains `0.6.0` (**Deep Clubhouse Design**). The isolated `0.7.0-dev` branch adds visual QA telemetry without changing the stable download: `/bsui qa` reports exact live frame sizes/anchors and `/bsui artcheck` verifies all four custom media assets in game. All changed ElvUI settings and peripheral positions remain reversible.
+The stable release remains `0.6.0` (**Deep Clubhouse Design**). The isolated `0.7.0-dev` branch adds visual QA telemetry and deeper custom instruments without changing the stable download: `/bsui qa` reports exact live geometry, `/bsui artcheck` verifies all custom media, player/target portraits receive an original Night-Elf Clubhouse bezel and every curated action button receives a restrained double-brass frame. All changed ElvUI settings and peripheral positions remain reversible.
 
 ## Goals
 
