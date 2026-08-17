@@ -6,7 +6,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
 
-Version `0.3.1` delivers the live **Birdie Command Deck** with a Classic-ElvUI handshake hotfix: branded scorecard framing, form-aware accents, combat dimming, central control-loss warnings and a target-debuff scorecard for Druid PvP.
+Version `0.4.0` is the **visual-foundation patch**: concept-2 proportions, larger central controls, correctly conditional gold framing, richer Clubhouse side panels, a B&B Night Tee medallion and correct Classic-TBC Druid-form accents. PvP functionality remains intentionally unchanged for this art pass.
 
 ## Goals
 
@@ -49,7 +49,7 @@ Addon versions must be validated against the installed TBC Classic client before
 
 ## Next build gate
 
-Run `/bsui install`, `/reload` and `/bsui alerttest`, then capture one resting screenshot and one combat screenshot. Final unit-frame sizing, Details! placement and a richer WeakAura cooldown layer remain downstream of that QA.
+Install v0.4.0, run `/bsui install` and `/reload`, then capture one resting screenshot with a target selected, Chat visible and Details! open. Functional PvP expansion begins only after this visual QA gate.
 
 ## Source of truth
 

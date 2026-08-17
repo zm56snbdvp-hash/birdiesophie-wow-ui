@@ -1,6 +1,6 @@
 local addonName, BSUI = ...
 
-local PROFILE_ID = "command-deck-3440x1440-v2"
+local PROFILE_ID = "command-deck-3440x1440-v3"
 
 BSUI.layout = {
   profileId = PROFILE_ID,
@@ -14,19 +14,19 @@ BSUI.layout = {
 }
 
 local moverPositions = {
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-260,285",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,260,285",
-  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-260,235",
-  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,515,330",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,260,245",
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-260,245",
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,78",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,116",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,154",
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-315,305",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,315,305",
+  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-315,257",
+  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,565,355",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,315,258",
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-315,258",
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,82",
+  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,132",
+  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,178",
   -- Legacy mover names remain harmless fallbacks for older ElvUI builds.
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,78",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,116",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,154",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,82",
+  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,132",
+  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,178",
   LeftChatMover = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,22,22",
   RightChatMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMRIGHT,-22,22",
   MinimapMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-22,-22",
@@ -36,24 +36,24 @@ local moverPositions = {
 }
 
 local profileSettings = {
-  ["unitframe.units.player.width"] = 340,
-  ["unitframe.units.player.height"] = 64,
-  ["unitframe.units.target.width"] = 340,
-  ["unitframe.units.target.height"] = 64,
-  ["unitframe.units.focus.width"] = 190,
-  ["unitframe.units.focus.height"] = 42,
-  ["unitframe.units.pet.width"] = 150,
+  ["unitframe.units.player.width"] = 380,
+  ["unitframe.units.player.height"] = 72,
+  ["unitframe.units.target.width"] = 380,
+  ["unitframe.units.target.height"] = 72,
+  ["unitframe.units.focus.width"] = 210,
+  ["unitframe.units.focus.height"] = 44,
+  ["unitframe.units.pet.width"] = 165,
   ["unitframe.units.pet.height"] = 30,
-  ["actionbar.bar1.buttonsize"] = 38,
-  ["actionbar.bar1.buttonspacing"] = 4,
+  ["actionbar.bar1.buttonsize"] = 46,
+  ["actionbar.bar1.buttonspacing"] = 5,
   ["actionbar.bar1.buttons"] = 12,
-  ["actionbar.bar2.buttonsize"] = 34,
-  ["actionbar.bar2.buttonspacing"] = 4,
+  ["actionbar.bar2.buttonsize"] = 42,
+  ["actionbar.bar2.buttonspacing"] = 5,
   ["actionbar.bar2.buttons"] = 12,
-  ["actionbar.bar3.buttonsize"] = 30,
+  ["actionbar.bar3.buttonsize"] = 38,
   ["actionbar.bar3.buttonspacing"] = 4,
   ["actionbar.bar3.buttons"] = 10,
-  ["chat.panelWidth"] = 420,
+  ["chat.panelWidth"] = 500,
   ["chat.panelHeight"] = 270,
 }
 
@@ -331,6 +331,9 @@ function BSUI.RestorePreviousLayout()
 
   BirdieSophieUIDB.layout.appliedProfile = nil
   BirdieSophieUIDB.themeEnabled = false
+  if BSUI.RestorePeripheralFrames then
+    BSUI.RestorePeripheralFrames()
+  end
   if BSUI.RefreshClubhouseTheme then
     BSUI.RefreshClubhouseTheme()
   end

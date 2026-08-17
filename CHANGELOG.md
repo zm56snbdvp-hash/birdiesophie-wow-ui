@@ -2,7 +2,15 @@
 
 All meaningful profile and architecture changes are recorded here.
 
-## 0.3.1 — Unreleased
+## 0.4.0 — Unreleased
+
+- Recompose the Command Deck around the cleaner concept-2 proportions: wider symmetric unit frames and larger curated action rows.
+- Anchor decorative scorecard frames to their real ElvUI owners so hidden Target and Focus frames no longer leave empty boxes.
+- Add a richer Clubhouse comms panel, Caddie scorecard panel and a discreet B&B Night Tee medallion.
+- Dock ChatFrame1 and DetailsBaseFrame1 into their intended side panels with reversible position backups.
+- Fix Classic TBC shapeshift-name detection so Bear, Cat, Travel and Aquatic forms receive the correct label and accent.
+
+## 0.3.1 — 2026-08-17
 
 - Fix `/bsui install` on Classic ElvUI profiles whose mover table has not been materialized by edit mode yet.
 - Add a precise readiness reason when the ElvUI global, engine or profile database is genuinely unavailable.

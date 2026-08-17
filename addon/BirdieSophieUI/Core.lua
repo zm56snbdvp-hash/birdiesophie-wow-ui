@@ -2,7 +2,7 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.3.1"
+BSUI.version = "0.4.0"
 BSUI.display = {
   width = nil,
   height = nil,

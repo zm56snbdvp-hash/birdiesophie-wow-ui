@@ -4,6 +4,10 @@ local shell
 local formBadge
 local combatLabel
 local themedFrames = {}
+local peripheralTargets = {
+  ChatFrame1 = { "BOTTOMLEFT", "BOTTOMLEFT", 34, 42, 464, 220 },
+  DetailsBaseFrame1 = { "BOTTOMRIGHT", "BOTTOMRIGHT", -34, 42, 464, 220 },
+}
 
 local function Print(message)
   if BSUI.Print then
@@ -46,9 +50,20 @@ local function CreatePanel(name, point, relativePoint, x, y, width, height, titl
 
   local surface = panel:CreateTexture(nil, "BACKGROUND")
   surface:SetAllPoints()
-  surface:SetColorTexture(Color("forest", 0.34))
+  surface:SetColorTexture(Color("graphite", 0.82))
   panel.surface = surface
-  AddEdges(panel, "champagne", 1, 0.58)
+  AddEdges(panel, "champagne", 1, 0.76)
+
+  local inner = panel:CreateTexture(nil, "BACKGROUND")
+  inner:SetPoint("TOPLEFT", panel, "TOPLEFT", 7, -28)
+  inner:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -7, 7)
+  inner:SetColorTexture(Color("forest", 0.34))
+
+  local scoreLine = panel:CreateTexture(nil, "ARTWORK")
+  scoreLine:SetPoint("TOPLEFT", panel, "TOPLEFT", 8, -27)
+  scoreLine:SetPoint("TOPRIGHT", panel, "TOPRIGHT", -8, -27)
+  scoreLine:SetHeight(1)
+  scoreLine:SetColorTexture(Color("champagne", 0.58))
 
   local label = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   label:SetPoint("TOPLEFT", panel, "TOPLEFT", 12, -8)
@@ -63,14 +78,16 @@ local function Decorate(frame, padX, padY)
     return
   end
 
-  local accent = CreateFrame("Frame", nil, shell)
+  -- Parenting the accent to its owner makes ElvUI visibility authoritative.
+  -- Hidden target/focus frames therefore cannot leave decorative empty boxes.
+  local accent = CreateFrame("Frame", nil, frame)
   accent:SetFrameStrata("LOW")
   accent:SetPoint("TOPLEFT", frame, "TOPLEFT", -(padX or 6), padY or 6)
   accent:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", padX or 6, -(padY or 6))
 
   local surface = accent:CreateTexture(nil, "BACKGROUND")
   surface:SetAllPoints()
-  surface:SetColorTexture(Color("graphite", 0.70))
+  surface:SetColorTexture(Color("graphite", 0.88))
   accent.surface = surface
   AddEdges(accent, "champagne", 1, 0.76)
   themedFrames[frame] = accent
@@ -89,8 +106,9 @@ local function ActiveForm()
   local activeTexture
   if type(GetNumShapeshiftForms) == "function" then
     for index = 1, GetNumShapeshiftForms() do
-      local icon, name, active = GetShapeshiftFormInfo(index)
+      local icon, active, _, spellId = GetShapeshiftFormInfo(index)
       if active then
+        local name = spellId and GetSpellInfo(spellId)
         activeName = string.upper(name or "DRUID")
         activeTexture = icon
         break
@@ -129,7 +147,7 @@ local function UpdateCombatState()
   local maxHealth = UnitHealthMax("player") or 1
   local danger = maxHealth > 0 and (health / maxHealth) <= 0.30
 
-  shell:SetAlpha(inCombat and 1 or 0.72)
+  shell:SetAlpha(inCombat and 1 or 0.84)
   combatLabel:SetText(inCombat and "MATCH PLAY" or "CLUBHOUSE")
   if danger then
     combatLabel:SetTextColor(0.92, 0.18, 0.14)
@@ -138,6 +156,61 @@ local function UpdateCombatState()
   else
     combatLabel:SetTextColor(Color("cream", 0.72))
   end
+end
+
+local function FrameBackup(frame)
+  local point, relative, relativePoint, x, y = frame:GetPoint(1)
+  if not point then
+    return nil
+  end
+
+  return {
+    point = point,
+    relativeName = relative and relative.GetName and relative:GetName() or nil,
+    relativePoint = relativePoint,
+    x = x or 0,
+    y = y or 0,
+    width = frame:GetWidth(),
+    height = frame:GetHeight(),
+  }
+end
+
+local function MovePeripheralFrames()
+  if type(InCombatLockdown) == "function" and InCombatLockdown() then
+    return
+  end
+
+  BirdieSophieUIDB.peripheralFrames = BirdieSophieUIDB.peripheralFrames or {}
+  for name, target in pairs(peripheralTargets) do
+    local frame = _G[name]
+    if frame and frame.ClearAllPoints and frame.SetPoint and frame.SetSize then
+      if BirdieSophieUIDB.peripheralFrames[name] == nil then
+        BirdieSophieUIDB.peripheralFrames[name] = FrameBackup(frame) or false
+      end
+      frame:ClearAllPoints()
+      frame:SetPoint(target[1], UIParent, target[2], target[3], target[4])
+      frame:SetSize(target[5], target[6])
+    end
+  end
+end
+
+function BSUI.RestorePeripheralFrames()
+  if type(InCombatLockdown) == "function" and InCombatLockdown() then
+    return false
+  end
+
+  for name, saved in pairs(BirdieSophieUIDB.peripheralFrames or {}) do
+    local frame = _G[name]
+    if frame and saved and frame.ClearAllPoints and frame.SetPoint then
+      local relative = saved.relativeName and _G[saved.relativeName] or UIParent
+      frame:ClearAllPoints()
+      frame:SetPoint(saved.point, relative, saved.relativePoint, saved.x, saved.y)
+      if saved.width and saved.height and frame.SetSize then
+        frame:SetSize(saved.width, saved.height)
+      end
+    end
+  end
+  return true
 end
 
 local function BuildShell()
@@ -150,23 +223,34 @@ local function BuildShell()
   shell:SetFrameStrata("BACKGROUND")
   shell:EnableMouse(false)
 
-  CreatePanel("BirdieSophieCommsPanel", "BOTTOMLEFT", "BOTTOMLEFT", 18, 18, 420, 270, "CLUBHOUSE COMMS")
-  CreatePanel("BirdieSophieCaddiePanel", "BOTTOMRIGHT", "BOTTOMRIGHT", -18, 18, 420, 270, "CADDIE SCORECARD")
+  CreatePanel("BirdieSophieCommsPanel", "BOTTOMLEFT", "BOTTOMLEFT", 18, 18, 500, 270, "CLUBHOUSE COMMS")
+  CreatePanel("BirdieSophieCaddiePanel", "BOTTOMRIGHT", "BOTTOMRIGHT", -18, 18, 500, 270, "CADDIE SCORECARD")
 
   local bridge = CreateFrame("Frame", nil, shell)
-  bridge:SetPoint("BOTTOM", shell, "BOTTOM", 0, 260)
-  bridge:SetSize(1120, 2)
+  bridge:SetPoint("BOTTOM", shell, "BOTTOM", 0, 294)
+  bridge:SetSize(1320, 2)
   local bridgeLine = bridge:CreateTexture(nil, "BACKGROUND")
   bridgeLine:SetAllPoints()
   bridgeLine:SetColorTexture(Color("champagne", 0.45))
 
-  local monogram = shell:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-  monogram:SetPoint("BOTTOMLEFT", shell, "BOTTOMLEFT", 28, 30)
-  monogram:SetText("B&B  •  NIGHT TEE")
-  monogram:SetTextColor(Color("champagne", 0.66))
+  local monogram = CreateFrame("Frame", "BirdieSophieMonogram", shell)
+  monogram:SetPoint("BOTTOMLEFT", shell, "BOTTOMLEFT", 28, 28)
+  monogram:SetSize(62, 62)
+  local seal = monogram:CreateTexture(nil, "BACKGROUND")
+  seal:SetAllPoints()
+  seal:SetColorTexture(Color("forest", 0.88))
+  AddEdges(monogram, "champagne", 2, 0.82)
+  local mark = monogram:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+  mark:SetPoint("CENTER", monogram, "CENTER", 0, 5)
+  mark:SetText("B&B")
+  mark:SetTextColor(Color("champagne", 0.94))
+  local nightTee = monogram:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  nightTee:SetPoint("TOP", mark, "BOTTOM", 0, -1)
+  nightTee:SetText("NIGHT TEE")
+  nightTee:SetTextColor(Color("cream", 0.66))
 
   combatLabel = shell:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-  combatLabel:SetPoint("BOTTOM", shell, "BOTTOM", 0, 268)
+  combatLabel:SetPoint("BOTTOM", shell, "BOTTOM", 0, 302)
 
   formBadge = CreateFrame("Frame", "BirdieSophieFormBadge", shell)
   formBadge:SetPoint("BOTTOM", shell, "BOTTOM", 0, 224)
@@ -208,10 +292,12 @@ function BSUI.RefreshClubhouseTheme()
     end
     UpdateForm()
     UpdateCombatState()
+    MovePeripheralFrames()
   else
     for _, accent in pairs(themedFrames) do
       accent:Hide()
     end
+    BSUI.RestorePeripheralFrames()
   end
 end
 
@@ -234,6 +320,7 @@ events:SetScript("OnEvent", function(_, event, unit)
     end
     if C_Timer and C_Timer.After then
       C_Timer.After(1, BSUI.RefreshClubhouseTheme)
+      C_Timer.After(2, MovePeripheralFrames)
     else
       BSUI.RefreshClubhouseTheme()
     end
