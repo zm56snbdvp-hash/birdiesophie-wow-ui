@@ -2,7 +2,15 @@
 
 All meaningful profile and architecture changes are recorded here.
 
-## 0.1.1 — Unreleased
+## 0.2.0 — Unreleased
+
+- Lock the runtime target to 3440 × 1440, UIParent 2867 × 1200 and effective scale 0.640.
+- Add `/bsui preview` with branded Combat Core, Clubhouse Comms, Caddie Zone and The Bag guides.
+- Add `/bsui apply` for supported ElvUI mover placement with a SavedVariables backup.
+- Add `/bsui restore` to recover the previous ElvUI mover positions.
+- Keep Details! placement manual for the first Caddie Zone QA pass.
+
+## 0.1.1 — 2026-08-17
 
 - Replace the hard-coded status canvas with runtime physical-resolution detection.
 - Add `/bsui screen` for physical resolution, UIParent dimensions, effective scale and aspect ratio.

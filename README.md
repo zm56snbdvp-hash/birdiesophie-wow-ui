@@ -4,7 +4,9 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 ## Status
 
-The repository currently contains the architecture and handoff baseline. Screenshot evidence indicates a likely **3840 × 1600 / 2.4:1** display, but the exact native in-game resolution and UI scale remain unconfirmed until the `0.1.1` runtime detector is read back in game.
+The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
+
+Version `0.2.0` introduces the first reversible Clubhouse layout pass: a four-zone preview plus backed-up ElvUI mover placement for the centered Combat Core, Clubhouse Comms, Caddie Zone and The Bag.
 
 ## Goals
 
@@ -34,19 +36,17 @@ Addon versions must be validated against the installed TBC Classic client before
 - `backups/` — recovery snapshots and checksums
 - `AGENTS.md` — continuation instructions for the next Birdie/Codex session
 
+## Current in-game commands
+
+- `/bsui status` — version and addon readiness
+- `/bsui screen` — physical and UI geometry
+- `/bsui preview` — toggle the branded zone guide
+- `/bsui apply` — back up and apply supported ElvUI mover positions
+- `/bsui restore` — restore the backed-up mover positions
+
 ## Next build gate
 
-Record these values from the gaming system:
-
-1. Exact native Windows resolution
-2. Exact WoW resolution
-3. Windowed/fullscreen mode
-4. WoW UI scale
-5. Display diagonal and aspect ratio
-6. Druid specialization and leveling build
-7. Preferred input device and keybind conventions
-
-Do not lock final coordinates or font sizes before these values are known.
+Run the `0.2.0` preview and layout in game, then capture one resting screenshot and one combat screenshot. Final unit-frame sizing, Details! placement and the form-aware WeakAura HUD remain downstream of that QA.
 
 ## Source of truth
 

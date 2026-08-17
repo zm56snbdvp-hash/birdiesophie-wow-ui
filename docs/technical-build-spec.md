@@ -5,7 +5,8 @@
 - Game: World of Warcraft: The Burning Crusade Classic
 - Character: Birdiesophie, female Night Elf Druid
 - Display: super-ultrawide curved TV/monitor
-- Working canvas: 3840 × 1080 / 32:9, provisional
+- Physical canvas: 3440 × 1440 / 2.389:1, confirmed by WoW physical-screen API
+- UIParent: 2867 × 1200 at effective scale 0.640
 
 ## Architecture
 
@@ -40,9 +41,9 @@ Muscle-memory positions should remain stable when forms change.
 7. Export profiles and create recovery backups.
 8. Perform in-game QA at native resolution.
 
-## Provisional 3840 × 1080 layout
+## Confirmed 3440 × 1440 Clubhouse layout
 
-- Safe Combat Core: centered, approximately 1600 px wide.
+- Safe Combat Core: centered, 46.5% of the logical screen width (approximately 1333 UI units / 1600 physical pixels as the design target).
 - Player frame: lower-left of the center axis.
 - Target frame: mirrored lower-right.
 - WeakAura Core: centered around the character and vertically compact.
@@ -80,11 +81,10 @@ Health and resources retain functional colors when brand colors would reduce rec
 - The UI must serve leveling and scale into dungeon/raid play.
 - Every major profile revision receives an export and recovery copy.
 
-## Build gate
+## Current build gate
 
-Final ElvUI coordinates, UI scale, font sizing and pixel-perfect anchors remain blocked until the exact native in-game resolution is confirmed.
+Screen detection is closed. Version `0.2.0` now provides a reversible zone preview and backed-up ElvUI mover application. Final frame sizes, typography, Details! placement and WeakAura geometry require resting and combat screenshots after `/bsui apply`.
 
 ## Provenance
 
 Imported from the Google Drive document **Birdiesophie UI – Technical Build Spec**, last modified 2026-08-16.
-

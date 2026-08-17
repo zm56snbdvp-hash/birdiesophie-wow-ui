@@ -2,7 +2,7 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.1.1"
+BSUI.version = "0.2.0"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -27,6 +27,8 @@ local function Print(message)
   local cream = "|cFFF0EAD6"
   DEFAULT_CHAT_FRAME:AddMessage(gold .. "BirdieSophie|r " .. cream .. message .. "|r")
 end
+
+BSUI.Print = Print
 
 local function IsLoaded(name)
   if C_AddOns and C_AddOns.IsAddOnLoaded then
@@ -133,7 +135,22 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
     return
   end
 
-  Print("Commands: /bsui status, /bsui screen")
+  if command == "preview" and BSUI.ToggleLayoutPreview then
+    BSUI.ToggleLayoutPreview()
+    return
+  end
+
+  if command == "apply" and BSUI.ApplyClubhouseLayout then
+    BSUI.ApplyClubhouseLayout()
+    return
+  end
+
+  if command == "restore" and BSUI.RestorePreviousLayout then
+    BSUI.RestorePreviousLayout()
+    return
+  end
+
+  Print("Commands: /bsui status, screen, preview, apply, restore")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
@@ -141,6 +158,9 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
     BirdieSophieUIDB.version = BSUI.version
     RefreshDisplayState()
   elseif event == "PLAYER_LOGIN" then
-    Print("NEXT TEE → /bsui status")
+    if BSUI.InitializeLayout then
+      BSUI.InitializeLayout()
+    end
+    Print("NEXT TEE → /bsui preview")
   end
 end)
