@@ -17,8 +17,8 @@ local function Build()
   friendlyRangeSpell = GetSpellInfo(774)
   hostileRangeSpell = GetSpellInfo(770)
   frame = CreateFrame("Frame", "BirdieSophieMouseoverCaddie", UIParent)
-  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 402)
-  frame:SetSize(440, 64)
+  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 455, 472)
+  frame:SetSize(300, 58)
   frame:SetFrameStrata("HIGH")
   Art.ApplyPanel(frame, { cornerSize = 29, washAlpha = 0.28, edgeAlpha = 0.98 })
 
@@ -34,14 +34,14 @@ local function Build()
 
   frame.bar = CreateFrame("Frame", nil, frame)
   frame.bar:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 8)
-  frame.bar:SetSize(404, 5)
+  frame.bar:SetSize(264, 5)
   frame.track = frame.bar:CreateTexture(nil, "BACKGROUND")
   frame.track:SetAllPoints()
   frame.track:SetColorTexture(0.01, 0.02, 0.015, 0.88)
   frame.fill = frame.bar:CreateTexture(nil, "ARTWORK")
   frame.fill:SetPoint("TOPLEFT")
   frame.fill:SetPoint("BOTTOMLEFT")
-  frame.fill:SetWidth(404)
+  frame.fill:SetWidth(264)
   frame:Hide()
 end
 
@@ -54,6 +54,11 @@ end
 local function Update()
   Build()
   if not BSUI.IsModuleEnabled("mouseover") or not UnitExists("mouseover") or UnitIsDeadOrGhost("mouseover") then
+    frame:Hide()
+    return
+  end
+
+  if type(UnitIsUnit) == "function" and UnitIsUnit("mouseover", "player") then
     frame:Hide()
     return
   end
@@ -84,7 +89,7 @@ local function Update()
   frame.health:SetText(string.format("%d%%", percent))
   frame.range:SetText(range == 0 and "OUT OF RANGE" or (range == 1 and "IN RANGE" or "RANGE UNKNOWN"))
   frame.range:SetTextColor(range == 0 and 0.88 or 0.78, range == 0 and 0.22 or 0.65, range == 0 and 0.17 or 0.39)
-  frame.fill:SetWidth(math.max(1, 404 * percent / 100))
+  frame.fill:SetWidth(math.max(1, 264 * percent / 100))
   frame:Show()
 end
 

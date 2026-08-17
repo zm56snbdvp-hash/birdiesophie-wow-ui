@@ -7,6 +7,7 @@ All meaningful profile and architecture changes are recorded here.
 - Add `/bsui qa` for an exact in-game visual snapshot: physical canvas, UIParent, scale, profile state, decoration count and the dimensions/anchors of the real ElvUI and Birdie frames.
 - Add `/bsui artcheck`, a temporary material board that renders the Clubhouse surface, brass corner, B&B seal and Birdie Coin from their installed addon paths.
 - Retry theme attachment after world entry and UI-scale changes so late-created ElvUI frames receive their Clubhouse surrounds without moving protected frames.
+- Recompose the cockpit from the first native v0.6 screenshot: separate the player and target instruments, shrink the central status rail so it no longer covers them, enlarge the curated action rows, move Mouseover/HôT cards to mirrored upper corners and suppress the redundant self-mouseover card.
 - Keep the stable `0.6.0` release and public latest ZIP unchanged while this candidate is validated.
 
 ## 0.6.0 — 2026-08-17

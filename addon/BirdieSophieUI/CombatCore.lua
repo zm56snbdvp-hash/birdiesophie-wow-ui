@@ -131,25 +131,31 @@ local function Build()
   if frame then return end
 
   frame = CreateFrame("Frame", "BirdieSophieCombatCore", UIParent)
-  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 286)
-  frame:SetSize(820, 94)
+  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 274)
+  frame:SetSize(620, 62)
   frame:SetFrameStrata("MEDIUM")
-  Art.ApplyPanel(frame, { cornerSize = 38, washAlpha = 0.28, edgeAlpha = 1, innerAlpha = 0.28 })
-  frame.title = Art.AddHeader(frame, "BIRDIE COMMAND DECK", { align = "CENTER", size = 12, height = 26 })
+  Art.ApplyPanel(frame, { cornerSize = 27, washAlpha = 0.22, edgeAlpha = 0.92, innerAlpha = 0.22 })
+  frame.title = Art.AddHeader(frame, "CADDIE STATUS", { align = "CENTER", size = 10, height = 20 })
 
   frame.player = Art.CreateText(frame, "OVERLAY", 15, "title", "OUTLINE")
   frame.player:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -42)
+  frame.player:Hide()
   frame.resource = Art.CreateText(frame, "OVERLAY", 12, "numbers", "OUTLINE")
   frame.resource:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 24, 17)
   frame.resource:SetTextColor(Color("turquoise", 0.96))
+  frame.resource:Hide()
 
   frame.target = Art.CreateText(frame, "OVERLAY", 15, "title", "OUTLINE")
   frame.target:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -24, -42)
+  frame.target:Hide()
   frame.targetHealth = Art.CreateText(frame, "OVERLAY", 12, "numbers", "OUTLINE")
   frame.targetHealth:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -24, 17)
+  frame.targetHealth:Hide()
 
   frame.playerBar = CreateBar(frame, "BOTTOMLEFT", 24, 7, 270)
   frame.targetBar = CreateBar(frame, "BOTTOMRIGHT", -24, 7, 270)
+  frame.playerBar:Hide()
+  frame.targetBar:Hide()
 
   frame.coins = Art.CreateText(frame, "OVERLAY", 1, "numbers", "OUTLINE")
   frame.coins:SetPoint("CENTER")
@@ -157,12 +163,12 @@ local function Build()
   frame.coinTextures = {}
   for index = 1, 5 do
     local coin = Art.CreateCoin(frame, 27)
-    coin:SetPoint("CENTER", frame, "CENTER", (index - 3) * 30, -2)
+    coin:SetPoint("CENTER", frame, "CENTER", (index - 3) * 30, 1)
     frame.coinTextures[index] = coin
   end
 
   frame.ready = Art.CreateText(frame, "OVERLAY", 11, "numbers", "OUTLINE")
-  frame.ready:SetPoint("TOP", frame, "TOP", 0, -61)
+  frame.ready:SetPoint("BOTTOM", frame, "BOTTOM", 0, 8)
   frame.ready:SetTextColor(Color("champagne"))
 
   frame.gcd = CreateFrame("Cooldown", "BirdieSophieGlobalCooldown", frame, "CooldownFrameTemplate")
@@ -172,7 +178,7 @@ local function Build()
   if frame.gcd.SetDrawBling then frame.gcd:SetDrawBling(false) end
 
   stealthFrame = CreateFrame("Frame", "BirdieSophieStealthCaddie", UIParent)
-  stealthFrame:SetPoint("BOTTOM", frame, "TOP", 0, 12)
+  stealthFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 468)
   stealthFrame:SetSize(560, 54)
   stealthFrame:SetFrameStrata("HIGH")
   Art.ApplyPanel(stealthFrame, { edge = "moonlight", cornerSize = 27, wash = "moonlight", washAlpha = 0.18, edgeAlpha = 0.94 })
@@ -187,8 +193,8 @@ local function Build()
   stealthFrame:Hide()
 
   hotFrame = CreateFrame("Frame", "BirdieSophiePlayerHots", UIParent)
-  hotFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", -410, 444)
-  hotFrame:SetSize(320, 112)
+  hotFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", -455, 472)
+  hotFrame:SetSize(300, 126)
   hotFrame:SetFrameStrata("MEDIUM")
   Art.ApplyPanel(hotFrame, { edge = "turquoise", cornerSize = 31, wash = "forest", washAlpha = 0.24, edgeAlpha = 0.90 })
   hotFrame.title = Art.AddHeader(hotFrame, "BIRDIE'S ACTIVE HÔTS", { size = 12, height = 27, color = "turquoise" })

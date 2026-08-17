@@ -64,6 +64,7 @@ function UnitCanAttack(_, unit) return unitState[unit] and unitState[unit].hosti
 function UnitIsFriend(_, unit) return unitState[unit] and unitState[unit].friendly or false end
 function UnitName(unit) return unitState[unit] and unitState[unit].name end
 function UnitGUID(unit) return "GUID-" .. unit end
+function UnitIsUnit(left, right) return left == right end
 function UnitAura() return nil end
 function UnitPowerType() return 1, "RAGE" end
 function UnitPower(_, powerType) return powerType == 0 and 6000 or 35 end
@@ -131,9 +132,9 @@ BSUI.InitializeLayout()
 SlashCmdList.BIRDIESOPHIEUI("install")
 BSUI.RefreshState()
 assert(BirdieSophieUIDB.themeEnabled == true and BirdieSophieUIDB.runtimeActive == true)
-assert(engine.db.unitframe.units.player.width == 470)
+assert(engine.db.unitframe.units.player.width == 410)
 assert(engine.db.unitframe.units.player.portrait.enable == true)
-assert(engine.db.actionbar.bar1.buttonsize == 54)
+assert(engine.db.actionbar.bar1.buttonsize == 60)
 assert(engine.db.movers.ElvUF_PlayerMover ~= "OLD")
 assert(frames.BirdieSophieClubhouseShell.shown == true)
 assert(frames.BirdieSophieFormBadge.text.text == "BEAR FORM")
