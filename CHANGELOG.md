@@ -2,6 +2,16 @@
 
 All meaningful profile and architecture changes are recorded here.
 
+## 0.6.0 — 2026-08-17
+
+- Replace the former one-pixel debug aesthetic with a custom Birdie & Breakfast material system: dark forest leather/wood texture, subtle golf-ball dimples, layered brass rails, ornamental leaf corners, Birdie Coins and a rendered B&B Night Tee seal.
+- Recompose the 3440 × 1440 Combat Zone around 470 × 92 portrait player/target frames, a central enemy castbar, a larger focus frame and substantially larger curated action rows.
+- Add reversible ElvUI profile tuning for 3D portraits, readable health/power tags, Druid resource colors, champagne borders, 13–18 px combat typography and larger cooldown numerals.
+- Turn the Combat Core into a full 820 × 94 Command Deck with health score rails, mana/form resources, textured combo coins, GCD state and ready/active callouts.
+- Add symmetric premium scorecards for Birdietee's active HoTs and tracked target debuffs, plus a larger relationship/range-aware Mouseover Caddie.
+- Rebuild Clubhouse Comms, Caddie Scorecard, Level Round, Night Round and The Bag with the same layered visual language and higher legibility.
+- Keep every state and warning event-driven, preserve module toggles, retain combat-lockdown protection and keep `/bsui restore` responsible for restoring all touched ElvUI settings and peripheral positions.
+
 ## 0.5.0 — 2026-08-17
 
 - Add a shared, event-driven state broker for caster, Cat, Bear, Travel, Aquatic, Flight, Prowl, combat, health, mana, active power, target health, combo points and global cooldown state.

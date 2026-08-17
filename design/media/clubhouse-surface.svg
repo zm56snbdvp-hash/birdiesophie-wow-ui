@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14241e"/>
+      <stop offset="0.48" stop-color="#0b1713"/>
+      <stop offset="1" stop-color="#07100e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.18" cy="0.05" r="0.95">
+      <stop offset="0" stop-color="#617b65" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#263a31" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.28"/>
+    </radialGradient>
+    <pattern id="dimples" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="6" cy="6" r="3.6" fill="none" stroke="#d9c690" stroke-opacity="0.045" stroke-width="1"/>
+      <circle cx="18" cy="18" r="3.6" fill="none" stroke="#d9c690" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="256" height="256" fill="url(#base)"/>
+  <rect width="256" height="256" fill="url(#glow)"/>
+  <path d="M-30 40 C40 10 96 72 286 18 M-42 103 C52 58 121 132 292 74 M-26 178 C64 128 144 205 282 139 M-22 242 C88 190 160 266 292 205" fill="none" stroke="#8b6238" stroke-opacity="0.065" stroke-width="3"/>
+  <rect width="256" height="256" fill="url(#dimples)"/>
+</svg>

@@ -1,5 +1,7 @@
 local addonName, BSUI = ...
 
+local Art = BSUI.Art
+
 local alertFrame
 local targetFrame
 local warningFrame
@@ -35,26 +37,6 @@ local function AddSpellNames(ids, target)
   end
 end
 
-local function AddEdges(frame, r, g, b, alpha)
-  local edges = {}
-  for index = 1, 4 do
-    edges[index] = frame:CreateTexture(nil, "BORDER")
-    edges[index]:SetColorTexture(r, g, b, alpha)
-  end
-  edges[1]:SetPoint("TOPLEFT")
-  edges[1]:SetPoint("TOPRIGHT")
-  edges[1]:SetHeight(1)
-  edges[2]:SetPoint("BOTTOMLEFT")
-  edges[2]:SetPoint("BOTTOMRIGHT")
-  edges[2]:SetHeight(1)
-  edges[3]:SetPoint("TOPLEFT")
-  edges[3]:SetPoint("BOTTOMLEFT")
-  edges[3]:SetWidth(1)
-  edges[4]:SetPoint("TOPRIGHT")
-  edges[4]:SetPoint("BOTTOMRIGHT")
-  edges[4]:SetWidth(1)
-end
-
 local function BuildAlerts()
   if alertFrame then
     return
@@ -65,47 +47,35 @@ local function BuildAlerts()
   AddSpellNames(importantCastIds, importantCasts)
 
   alertFrame = CreateFrame("Frame", "BirdieSophieControlAlert", UIParent)
-  alertFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -12)
-  alertFrame:SetSize(430, 48)
+  alertFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -18)
+  alertFrame:SetSize(560, 68)
   alertFrame:SetFrameStrata("HIGH")
-  local alertSurface = alertFrame:CreateTexture(nil, "BACKGROUND")
-  alertSurface:SetAllPoints()
-  alertSurface:SetColorTexture(0.12, 0.018, 0.016, 0.91)
-  AddEdges(alertFrame, 0.90, 0.18, 0.13, 0.96)
-  alertFrame.text = alertFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+  Art.ApplyPanel(alertFrame, { edge = "danger", wash = "danger", washAlpha = 0.28, cornerSize = 34, edgeAlpha = 1 })
+  alertFrame.text = Art.CreateText(alertFrame, "OVERLAY", 21, "title", "THICKOUTLINE")
   alertFrame.text:SetPoint("CENTER")
   alertFrame.text:SetTextColor(1, 0.84, 0.64)
   alertFrame:Hide()
 
   targetFrame = CreateFrame("Frame", "BirdieSophieTargetDebuffs", UIParent)
-  targetFrame:SetPoint("CENTER", UIParent, "CENTER", 310, 112)
-  targetFrame:SetSize(275, 76)
+  targetFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 410, 444)
+  targetFrame:SetSize(320, 112)
   targetFrame:SetFrameStrata("MEDIUM")
-  local targetSurface = targetFrame:CreateTexture(nil, "BACKGROUND")
-  targetSurface:SetAllPoints()
-  targetSurface:SetColorTexture(0.055, 0.063, 0.059, 0.84)
-  AddEdges(targetFrame, 0.78, 0.65, 0.39, 0.72)
-  targetFrame.title = targetFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-  targetFrame.title:SetPoint("TOPLEFT", 9, -7)
-  targetFrame.title:SetText("TARGET SCORECARD")
-  targetFrame.title:SetTextColor(0.78, 0.65, 0.39)
-  targetFrame.text = targetFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  targetFrame.text:SetPoint("TOPLEFT", 9, -25)
-  targetFrame.text:SetPoint("BOTTOMRIGHT", -9, 7)
+  Art.ApplyPanel(targetFrame, { cornerSize = 31, washAlpha = 0.24, edgeAlpha = 0.92 })
+  targetFrame.title = Art.AddHeader(targetFrame, "TARGET SCORECARD", { size = 12, height = 27 })
+  targetFrame.text = Art.CreateText(targetFrame, "OVERLAY", 13, "numbers", "OUTLINE")
+  targetFrame.text:SetPoint("TOPLEFT", 20, -44)
+  targetFrame.text:SetPoint("BOTTOMRIGHT", -20, 12)
   targetFrame.text:SetJustifyH("LEFT")
   targetFrame.text:SetJustifyV("TOP")
   targetFrame.text:SetTextColor(0.94, 0.92, 0.84)
   targetFrame:Hide()
 
   warningFrame = CreateFrame("Frame", "BirdieSophieCaddieWarning", UIParent)
-  warningFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -72)
-  warningFrame:SetSize(430, 36)
+  warningFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -96)
+  warningFrame:SetSize(520, 48)
   warningFrame:SetFrameStrata("HIGH")
-  local warningSurface = warningFrame:CreateTexture(nil, "BACKGROUND")
-  warningSurface:SetAllPoints()
-  warningSurface:SetColorTexture(0.055, 0.063, 0.059, 0.94)
-  AddEdges(warningFrame, 0.78, 0.65, 0.39, 0.92)
-  warningFrame.text = warningFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  Art.ApplyPanel(warningFrame, { cornerSize = 26, washAlpha = 0.28, edgeAlpha = 0.96 })
+  warningFrame.text = Art.CreateText(warningFrame, "OVERLAY", 16, "title", "OUTLINE")
   warningFrame.text:SetPoint("CENTER")
   warningFrame.text:SetTextColor(1, 0.84, 0.64)
   warningFrame:Hide()

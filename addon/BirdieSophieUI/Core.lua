@@ -2,7 +2,7 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.5.0"
+BSUI.version = "0.6.0"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -16,6 +16,9 @@ BSUI.colors = {
   champagne = { 0.780, 0.655, 0.388, 1 },
   cream = { 0.941, 0.918, 0.839, 1 },
   moonlight = { 0.420, 0.390, 0.620, 1 },
+  turquoise = { 0.180, 0.660, 0.680, 1 },
+  copper = { 0.660, 0.360, 0.180, 1 },
+  danger = { 0.880, 0.220, 0.170, 1 },
 }
 
 local frame = CreateFrame("Frame")

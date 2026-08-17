@@ -1,25 +1,14 @@
 local addonName, BSUI = ...
 
+local Art = BSUI.Art
 local frame
 local friendlyRangeSpell
 local hostileRangeSpell
 
-local function AddEdges(owner, r, g, b, alpha)
-  owner.edges = owner.edges or {}
-  for index = 1, 4 do
-    local edge = owner.edges[index] or owner:CreateTexture(nil, "BORDER")
-    edge:SetColorTexture(r, g, b, alpha)
-    owner.edges[index] = edge
-  end
-  owner.edges[1]:SetPoint("TOPLEFT"); owner.edges[1]:SetPoint("TOPRIGHT"); owner.edges[1]:SetHeight(2)
-  owner.edges[2]:SetPoint("BOTTOMLEFT"); owner.edges[2]:SetPoint("BOTTOMRIGHT"); owner.edges[2]:SetHeight(2)
-  owner.edges[3]:SetPoint("TOPLEFT"); owner.edges[3]:SetPoint("BOTTOMLEFT"); owner.edges[3]:SetWidth(2)
-  owner.edges[4]:SetPoint("TOPRIGHT"); owner.edges[4]:SetPoint("BOTTOMRIGHT"); owner.edges[4]:SetWidth(2)
-end
-
 local function SetEdgeColor(r, g, b, alpha)
-  for _, edge in ipairs(frame.edges or {}) do
-    edge:SetColorTexture(r, g, b, alpha)
+  for index = 5, 8 do
+    local edge = frame.bsuiArtEdges and frame.bsuiArtEdges[index]
+    if edge then edge:SetColorTexture(r, g, b, alpha) end
   end
 end
 
@@ -28,16 +17,31 @@ local function Build()
   friendlyRangeSpell = GetSpellInfo(774)
   hostileRangeSpell = GetSpellInfo(770)
   frame = CreateFrame("Frame", "BirdieSophieMouseoverCaddie", UIParent)
-  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 336)
-  frame:SetSize(360, 36)
+  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 402)
+  frame:SetSize(440, 64)
   frame:SetFrameStrata("HIGH")
-  local surface = frame:CreateTexture(nil, "BACKGROUND")
-  surface:SetAllPoints()
-  surface:SetColorTexture(0.055, 0.063, 0.059, 0.90)
-  AddEdges(frame, 0.78, 0.65, 0.39, 0.92)
-  frame.text = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  frame.text:SetPoint("CENTER")
-  frame.text:SetTextColor(0.94, 0.92, 0.84)
+  Art.ApplyPanel(frame, { cornerSize = 29, washAlpha = 0.28, edgeAlpha = 0.98 })
+
+  frame.relation = Art.CreateText(frame, "OVERLAY", 10, "title", "OUTLINE")
+  frame.relation:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -13)
+  frame.name = Art.CreateText(frame, "OVERLAY", 15, "title", "OUTLINE")
+  frame.name:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 17)
+  frame.text = frame.name
+  frame.health = Art.CreateText(frame, "OVERLAY", 14, "numbers", "OUTLINE")
+  frame.health:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 17)
+  frame.range = Art.CreateText(frame, "OVERLAY", 10, "numbers", "OUTLINE")
+  frame.range:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -20, -13)
+
+  frame.bar = CreateFrame("Frame", nil, frame)
+  frame.bar:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 8)
+  frame.bar:SetSize(404, 5)
+  frame.track = frame.bar:CreateTexture(nil, "BACKGROUND")
+  frame.track:SetAllPoints()
+  frame.track:SetColorTexture(0.01, 0.02, 0.015, 0.88)
+  frame.fill = frame.bar:CreateTexture(nil, "ARTWORK")
+  frame.fill:SetPoint("TOPLEFT")
+  frame.fill:SetPoint("BOTTOMLEFT")
+  frame.fill:SetWidth(404)
   frame:Hide()
 end
 
@@ -56,24 +60,31 @@ local function Update()
 
   local friendly = UnitIsFriend("player", "mouseover")
   local hostile = UnitCanAttack("player", "mouseover")
-  if not friendly and not hostile then
-    frame:Hide()
-    return
-  end
+  if not friendly and not hostile then frame:Hide(); return end
 
   local range = SpellRange(friendly and friendlyRangeSpell or hostileRangeSpell)
-  local alpha = range == 0 and 0.45 or 1
+  frame:SetAlpha(range == 0 and 0.46 or 1)
   if friendly then
-    SetEdgeColor(0.18, 0.66, 0.68, 0.95)
+    SetEdgeColor(0.18, 0.66, 0.68, 0.98)
+    frame.relation:SetText("FRIENDLY CADDIE LINE")
+    frame.relation:SetTextColor(0.18, 0.66, 0.68)
+    frame.fill:SetColorTexture(0.18, 0.66, 0.68, 0.90)
   else
-    SetEdgeColor(0.88, 0.22, 0.17, 0.95)
+    SetEdgeColor(0.88, 0.22, 0.17, 0.98)
+    frame.relation:SetText("HOSTILE ON THE TEE")
+    frame.relation:SetTextColor(0.88, 0.22, 0.17)
+    frame.fill:SetColorTexture(0.88, 0.22, 0.17, 0.90)
   end
-  frame:SetAlpha(alpha)
+
   local name = UnitName("mouseover") or "MOUSEOVER"
   local health = UnitHealth("mouseover") or 0
   local maximum = math.max(1, UnitHealthMax("mouseover") or 1)
-  local rangeText = range == 0 and "  •  OUT OF RANGE" or ""
-  frame.text:SetText(string.format("%s  •  %d%%%s", name, math.floor((health / maximum) * 100 + 0.5), rangeText))
+  local percent = math.floor((health / maximum) * 100 + 0.5)
+  frame.name:SetText(name)
+  frame.health:SetText(string.format("%d%%", percent))
+  frame.range:SetText(range == 0 and "OUT OF RANGE" or (range == 1 and "IN RANGE" or "RANGE UNKNOWN"))
+  frame.range:SetTextColor(range == 0 and 0.88 or 0.78, range == 0 and 0.22 or 0.65, range == 0 and 0.17 or 0.39)
+  frame.fill:SetWidth(math.max(1, 404 * percent / 100))
   frame:Show()
 end
 

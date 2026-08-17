@@ -117,24 +117,26 @@ end
 BirdieSophieUIDB = {}
 local BSUI = {}
 for _, path in ipairs({
-  "addon/BirdieSophieUI/Core.lua", "addon/BirdieSophieUI/Modules.lua", "addon/BirdieSophieUI/State.lua",
+  "addon/BirdieSophieUI/Core.lua", "addon/BirdieSophieUI/Art.lua", "addon/BirdieSophieUI/Modules.lua", "addon/BirdieSophieUI/State.lua",
   "addon/BirdieSophieUI/Layout.lua", "addon/BirdieSophieUI/Theme.lua", "addon/BirdieSophieUI/CombatCore.lua",
   "addon/BirdieSophieUI/Mouseover.lua", "addon/BirdieSophieUI/Leveling.lua", "addon/BirdieSophieUI/Bag.lua",
   "addon/BirdieSophieUI/Alerts.lua",
 }) do assert(loadfile(path))("BirdieSophieUI", BSUI) end
 
-assert(BSUI.version == "0.5.0")
+assert(BSUI.version == "0.6.0")
 BSUI.InitializeLayout()
 SlashCmdList.BIRDIESOPHIEUI("install")
 BSUI.RefreshState()
 assert(BirdieSophieUIDB.themeEnabled == true and BirdieSophieUIDB.runtimeActive == true)
-assert(engine.db.unitframe.units.player.width == 380)
-assert(engine.db.actionbar.bar1.buttonsize == 46)
+assert(engine.db.unitframe.units.player.width == 470)
+assert(engine.db.unitframe.units.player.portrait.enable == true)
+assert(engine.db.actionbar.bar1.buttonsize == 54)
 assert(engine.db.movers.ElvUF_PlayerMover ~= "OLD")
 assert(frames.BirdieSophieClubhouseShell.shown == true)
 assert(frames.BirdieSophieFormBadge.text.text == "BEAR FORM")
 assert(frames.BirdieSophieCombatCore.shown == true)
 assert(frames.BirdieSophieCombatCore.coins.text == "● ● ● ○ ○")
+assert(frames.BirdieSophieCombatCore.coinCount == 3)
 assert(frames.BirdieSophieMouseoverCaddie.shown == true)
 assert(frames.BirdieSophieLevelCaddie.shown == true)
 assert(frames.BirdieSophieUtilityBag.shown == true)
@@ -150,4 +152,4 @@ assert(frames.ChatFrame1.width == 300 and frames.ChatFrame1.height == 180)
 engine.db.movers = nil
 assert(BSUI.ApplyClubhouseLayout() == true)
 assert(type(engine.db.movers) == "table" and engine.db.movers.ElvUF_PlayerMover ~= nil)
-print("BirdieSophieUI v0.5.0 mock runtime PASS")
+print("BirdieSophieUI v0.6.0 mock runtime PASS")

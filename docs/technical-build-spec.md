@@ -83,9 +83,9 @@ Health and resources retain functional colors when brand colors would reduce rec
 
 ## Current build gate
 
-Screen detection is closed. Version `0.5.0` adds the modular Caddie foundation while retaining the reversible v0.4 Command Deck. Form/resource state, mouseover feedback, Prowl treatment, leveling telemetry, utility inventory counts and the first combat-log warnings are implemented without automatic targeting or spell execution. Native-resolution QA after `/bsui install` remains required for final geometry and font tuning.
+Screen detection is closed. Version `0.6.0` retains the modular Caddie foundation and applies the first deep visual identity pass: custom raster media, material panels, portrait-led 470 × 92 unit frames, 820 × 94 central score deck, larger action rows and symmetric HoT/debuff cards. Form/resource state, mouseover feedback, Prowl treatment, leveling telemetry, utility inventory counts and the first combat-log warnings remain event-driven without automatic targeting or spell execution. Native-resolution QA after `/bsui install` remains required for the last portrait/castbar offsets.
 
-## Honest API boundaries in v0.5.0
+## Honest API boundaries in v0.6.0
 
 - Mouseover range is only labeled out of range when `IsSpellInRange` returns a definite result; an unknown result is not guessed.
 - Level ETA appears only after at least two minutes and positive XP gain in the current session.
