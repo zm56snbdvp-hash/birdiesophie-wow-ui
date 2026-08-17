@@ -2,7 +2,7 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.4.0"
+BSUI.version = "0.5.0"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -124,7 +124,9 @@ end
 
 SLASH_BIRDIESOPHIEUI1 = "/bsui"
 SlashCmdList.BIRDIESOPHIEUI = function(message)
-  local command = string.lower(strtrim(message or ""))
+  local input = string.lower(strtrim(message or ""))
+  local command, arguments = string.match(input, "^(%S+)%s*(.-)$")
+  command = command or ""
   if command == "" or command == "status" then
     ShowStatus()
     return
@@ -165,14 +167,30 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
     return
   end
 
-  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, alerttest")
+  if command == "modules" and BSUI.ShowModules then
+    BSUI.ShowModules()
+    return
+  end
+
+  if command == "module" and BSUI.ModuleCommand then
+    BSUI.ModuleCommand(arguments)
+    return
+  end
+
+  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
   if event == "ADDON_LOADED" and loadedAddon == addonName then
     BirdieSophieUIDB.version = BSUI.version
+    if BSUI.InitializeModules then
+      BSUI.InitializeModules()
+    end
     RefreshDisplayState()
   elseif event == "PLAYER_LOGIN" then
+    if BSUI.InitializeModules then
+      BSUI.InitializeModules()
+    end
     if BSUI.InitializeLayout then
       BSUI.InitializeLayout()
     end

@@ -2,7 +2,19 @@
 
 All meaningful profile and architecture changes are recorded here.
 
-## 0.4.0 — Unreleased
+## 0.5.0 — 2026-08-17
+
+- Add a shared, event-driven state broker for caster, Cat, Bear, Travel, Aquatic, Flight, Prowl, combat, health, mana, active power, target health, combo points and global cooldown state.
+- Add a compact central Combat Core with mana retained in forms, active resource values, Birdie Coin combo points, target health and ready-state labels for Bash, Feral Charge, Barkskin and an equipped usable trinket.
+- Add a non-targeting Mouseover Caddie with friendly/hostile borders, dead-unit rejection and honest range feedback when the client exposes `IsSpellInRange`.
+- Add Night Round Prowl treatment and a fixed-position opener ribbon without rearranging protected action buttons.
+- Add a level 58–69 panel for XP, XP remaining, rested XP, evidence-based ETA, quest readiness, bag space, durability and session gold change; it hides in combat.
+- Add resilient Caddie warnings for missing/expiring Faerie Fire, important hostile casts, resisted/immune player spells and hostile Rogue Vanish combat-log evidence.
+- Add a display-only utility inventory strip for potions, bandages, food, water, Hearthstone and quest-item counts.
+- Add independent module toggles and make `/bsui restore` disable every runtime module while preserving module preferences.
+- Keep action execution, automatic targeting, arena-button dependency, dispel logic, focus automation, powershifting and unreliable enemy inference out of this release.
+
+## 0.4.0 — 2026-08-17
 
 - Recompose the Command Deck around the cleaner concept-2 proportions: wider symmetric unit frames and larger curated action rows.
 - Anchor decorative scorecard frames to their real ElvUI owners so hidden Target and Focus frames no longer leave empty boxes.

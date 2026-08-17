@@ -147,8 +147,9 @@ local function UpdateCombatState()
   local maxHealth = UnitHealthMax("player") or 1
   local danger = maxHealth > 0 and (health / maxHealth) <= 0.30
 
-  shell:SetAlpha(inCombat and 1 or 0.84)
-  combatLabel:SetText(inCombat and "MATCH PLAY" or "CLUBHOUSE")
+  local stealth = BSUI.state and BSUI.state.stealth and BSUI.IsModuleEnabled and BSUI.IsModuleEnabled("stealth")
+  shell:SetAlpha(stealth and 0.58 or (inCombat and 1 or 0.84))
+  combatLabel:SetText(stealth and "NIGHT ROUND" or (inCombat and "MATCH PLAY" or "CLUBHOUSE"))
   if danger then
     combatLabel:SetTextColor(0.92, 0.18, 0.14)
   elseif inCombat then
@@ -156,6 +157,13 @@ local function UpdateCombatState()
   else
     combatLabel:SetTextColor(Color("cream", 0.72))
   end
+end
+
+if BSUI.RegisterStateListener then
+  BSUI.RegisterStateListener(function()
+    UpdateForm()
+    UpdateCombatState()
+  end)
 end
 
 local function FrameBackup(frame)

@@ -83,7 +83,16 @@ Health and resources retain functional colors when brand colors would reduce rec
 
 ## Current build gate
 
-Screen detection is closed. Version `0.3.0` provides a reversible live Command Deck: supported ElvUI placement, branded framing, form state, combat contrast, player CC alerts and a target-debuff scorecard. Final frame sizes, Details! placement and the richer WeakAura cooldown geometry require resting and combat screenshots after `/bsui install`.
+Screen detection is closed. Version `0.5.0` adds the modular Caddie foundation while retaining the reversible v0.4 Command Deck. Form/resource state, mouseover feedback, Prowl treatment, leveling telemetry, utility inventory counts and the first combat-log warnings are implemented without automatic targeting or spell execution. Native-resolution QA after `/bsui install` remains required for final geometry and font tuning.
+
+## Honest API boundaries in v0.5.0
+
+- Mouseover range is only labeled out of range when `IsSpellInRange` returns a definite result; an unknown result is not guessed.
+- Level ETA appears only after at least two minutes and positive XP gain in the current session.
+- Rogue Vanish is reported only from a hostile combat-log event with a recognized Vanish spell ID.
+- Low-rage guidance appears only after a failed player cast when the client exposes structured spell power cost data.
+- The Bag is informational. It does not choose or use an item and therefore does not create protected combat actions.
+- Dynamic nameplate reconfiguration, dispel recommendations, arena units, focus automation and powershifting are reserved for later TBC in-game validation.
 
 ## Provenance
 

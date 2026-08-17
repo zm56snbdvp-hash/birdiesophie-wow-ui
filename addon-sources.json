@@ -30,7 +30,8 @@
       "name": "BirdieSophieUI",
       "required": true,
       "provider": "GitHub Release",
-      "url": "https://github.com/zm56snbdvp-hash/birdiesophie-wow-ui"
+      "url": "https://github.com/stroopkevin-hash/birdiesophie-wow-ui",
+      "download": "https://raw.githubusercontent.com/stroopkevin-hash/birdiesophie-wow-ui/main/BirdieSophieUI-latest.zip"
     }
   ]
 }

@@ -6,7 +6,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
 
-Version `0.4.0` is the **visual-foundation patch**: concept-2 proportions, larger central controls, correctly conditional gold framing, richer Clubhouse side panels, a B&B Night Tee medallion and correct Classic-TBC Druid-form accents. PvP functionality remains intentionally unchanged for this art pass.
+Version `0.5.0` is the first **Caddie foundation**: event-driven Druid form/resource state, a compact Combat Core, non-targeting mouseover feedback, a quiet Prowl mode, honest leveling telemetry, robust combat-log warnings and a display-only utility bag. The v0.4 visual foundation and reversible ElvUI backup remain intact.
 
 ## Goals
 
@@ -46,10 +46,12 @@ Addon versions must be validated against the installed TBC Classic client before
 - `/bsui restore` — restore the backed-up mover positions
 - `/bsui theme` — toggle the Clubhouse shell without moving ElvUI
 - `/bsui alerttest` — show the CC and target-scorecard test state for five seconds
+- `/bsui modules` — list the six independently switchable Caddie modules
+- `/bsui module <name> on|off|toggle` — control `core`, `mouseover`, `stealth`, `leveling`, `caddie` or `bag`
 
 ## Next build gate
 
-Install v0.4.0, run `/bsui install` and `/reload`, then capture one resting screenshot with a target selected, Chat visible and Details! open. Functional PvP expansion begins only after this visual QA gate.
+Install v0.5.0, run `/bsui install` and `/reload`, then test caster, Cat, Prowl and Bear once. The next gate is native-resolution visual tuning plus live TBC validation of spell/item coverage.
 
 ## Source of truth
 

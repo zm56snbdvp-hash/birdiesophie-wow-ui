@@ -289,6 +289,9 @@ function BSUI.InstallClubhouse()
     return
   end
   BirdieSophieUIDB.themeEnabled = true
+  if BSUI.SetRuntimeActive then
+    BSUI.SetRuntimeActive(true)
+  end
   if BSUI.RefreshClubhouseTheme then
     BSUI.RefreshClubhouseTheme()
   end
@@ -305,6 +308,10 @@ function BSUI.RestorePreviousLayout()
   local saved = BirdieSophieUIDB.layout and BirdieSophieUIDB.layout.originalMovers
   local savedSettings = BirdieSophieUIDB.layout and BirdieSophieUIDB.layout.originalSettings
   if not engine or (not saved and not savedSettings) then
+    BirdieSophieUIDB.themeEnabled = false
+    if BSUI.SetRuntimeActive then BSUI.SetRuntimeActive(false) end
+    if BSUI.RestorePeripheralFrames then BSUI.RestorePeripheralFrames() end
+    if BSUI.RefreshClubhouseTheme then BSUI.RefreshClubhouseTheme() end
     Print("No previous ElvUI mover backup is available.")
     return
   end
@@ -331,6 +338,9 @@ function BSUI.RestorePreviousLayout()
 
   BirdieSophieUIDB.layout.appliedProfile = nil
   BirdieSophieUIDB.themeEnabled = false
+  if BSUI.SetRuntimeActive then
+    BSUI.SetRuntimeActive(false)
+  end
   if BSUI.RestorePeripheralFrames then
     BSUI.RestorePeripheralFrames()
   end

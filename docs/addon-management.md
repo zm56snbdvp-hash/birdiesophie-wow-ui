@@ -28,7 +28,7 @@ As of 2026-08-17, WowUp's addon-list import/export has an open client-type misma
 2. Select the WoW installation ending in `_anniversary_`.
 3. Install ElvUI from the TukUI provider.
 4. Install WeakAuras and Details! from the CurseForge provider.
-5. Install the final BirdieSophieUI GitHub repository URL after its first tagged release exists.
+5. Install BirdieSophieUI from `https://github.com/stroopkevin-hash/birdiesophie-wow-ui` or download the stable `BirdieSophieUI-latest.zip` artifact from that repository.
 6. Start WoW and run `/bsui status`.
 
 ## Boundaries
@@ -37,4 +37,3 @@ As of 2026-08-17, WowUp's addon-list import/export has an open client-type misma
 - Do not redistribute modified ElvUI files inside BirdieSophieUI.
 - Do not hardcode account, realm or character identifiers.
 - Back up sanitized exports before major migrations.
-
