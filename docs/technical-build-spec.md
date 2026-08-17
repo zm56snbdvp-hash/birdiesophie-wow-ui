@@ -83,7 +83,7 @@ Health and resources retain functional colors when brand colors would reduce rec
 
 ## Current build gate
 
-Screen detection is closed. Version `0.2.0` now provides a reversible zone preview and backed-up ElvUI mover application. Final frame sizes, typography, Details! placement and WeakAura geometry require resting and combat screenshots after `/bsui apply`.
+Screen detection is closed. Version `0.3.0` provides a reversible live Command Deck: supported ElvUI placement, branded framing, form state, combat contrast, player CC alerts and a target-debuff scorecard. Final frame sizes, Details! placement and the richer WeakAura cooldown geometry require resting and combat screenshots after `/bsui install`.
 
 ## Provenance
 

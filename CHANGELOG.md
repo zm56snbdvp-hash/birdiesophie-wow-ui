@@ -2,7 +2,17 @@
 
 All meaningful profile and architecture changes are recorded here.
 
-## 0.2.0 — Unreleased
+## 0.3.0 — Unreleased
+
+- Add the live Birdie Command Deck shell with translucent forest panels, champagne scorecard lines and a discreet B&B Night Tee signature.
+- Add form-aware accent state for Cat, Bear, Travel, Aquatic and caster forms.
+- Add a central PvP control-loss alert for high-impact TBC crowd control.
+- Add a compact target scorecard for Faerie Fire, Entangling Roots, Hibernate and Cyclone.
+- Add combat-aware contrast: the Clubhouse recedes out of combat and sharpens during match play; red is reserved for danger.
+- Add `/bsui install` as the one-command reversible v0.3 setup and `/bsui alerttest` for immediate visual QA.
+- Add focus, castbar and group-frame mover targets while preserving supported-mover checks and the original layout backup.
+
+## 0.2.0 — 2026-08-17
 
 - Lock the runtime target to 3440 × 1440, UIParent 2867 × 1200 and effective scale 0.640.
 - Add `/bsui preview` with branded Combat Core, Clubhouse Comms, Caddie Zone and The Bag guides.

@@ -1,6 +1,6 @@
 local addonName, BSUI = ...
 
-local PROFILE_ID = "clubhouse-3440x1440-v1"
+local PROFILE_ID = "command-deck-3440x1440-v2"
 
 BSUI.layout = {
   profileId = PROFILE_ID,
@@ -17,6 +17,9 @@ local moverPositions = {
   ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-260,285",
   ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,260,285",
   ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-260,235",
+  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,515,330",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,260,245",
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-260,245",
   ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,78",
   ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,116",
   ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,154",
@@ -28,6 +31,30 @@ local moverPositions = {
   RightChatMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMRIGHT,-22,22",
   MinimapMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-22,-22",
   ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-310,-210",
+  ElvUF_Raid1Mover = "LEFT,ElvUIParent,LEFT,310,125",
+  ElvUF_PartyMover = "LEFT,ElvUIParent,LEFT,310,125",
+}
+
+local profileSettings = {
+  ["unitframe.units.player.width"] = 340,
+  ["unitframe.units.player.height"] = 64,
+  ["unitframe.units.target.width"] = 340,
+  ["unitframe.units.target.height"] = 64,
+  ["unitframe.units.focus.width"] = 190,
+  ["unitframe.units.focus.height"] = 42,
+  ["unitframe.units.pet.width"] = 150,
+  ["unitframe.units.pet.height"] = 30,
+  ["actionbar.bar1.buttonsize"] = 38,
+  ["actionbar.bar1.buttonspacing"] = 4,
+  ["actionbar.bar1.buttons"] = 12,
+  ["actionbar.bar2.buttonsize"] = 34,
+  ["actionbar.bar2.buttonspacing"] = 4,
+  ["actionbar.bar2.buttons"] = 12,
+  ["actionbar.bar3.buttonsize"] = 30,
+  ["actionbar.bar3.buttonspacing"] = 4,
+  ["actionbar.bar3.buttons"] = 10,
+  ["chat.panelWidth"] = 420,
+  ["chat.panelHeight"] = 270,
 }
 
 local preview
@@ -135,6 +162,44 @@ local function SetMover(engine, moverName, position)
   end
 end
 
+local function PathParts(path)
+  local parts = {}
+  for part in string.gmatch(path, "[^.]+") do
+    parts[#parts + 1] = part
+  end
+  return parts
+end
+
+local function GetPath(root, path)
+  local cursor = root
+  for _, part in ipairs(PathParts(path)) do
+    if type(cursor) ~= "table" then
+      return nil
+    end
+    cursor = cursor[part]
+  end
+  return cursor
+end
+
+local function SetPath(root, path, value)
+  local parts = PathParts(path)
+  local cursor = root
+  for index = 1, #parts - 1 do
+    local part = parts[index]
+    if type(cursor[part]) ~= "table" then
+      cursor[part] = {}
+    end
+    cursor = cursor[part]
+  end
+  cursor[parts[#parts]] = value
+end
+
+local function RefreshElvUI(engine)
+  if type(engine.UpdateAll) == "function" then
+    pcall(engine.UpdateAll, engine, true)
+  end
+end
+
 function BSUI.InitializeLayout()
   BuildPreview()
   BirdieSophieUIDB.layout = BirdieSophieUIDB.layout or {}
@@ -155,17 +220,18 @@ end
 function BSUI.ApplyClubhouseLayout()
   if type(InCombatLockdown) == "function" and InCombatLockdown() then
     Print("Layout is locked during combat. Leave combat and run /bsui apply again.")
-    return
+    return false
   end
 
   local engine = ElvEngine()
   if not engine then
     Print("ElvUI layout engine is not ready.")
-    return
+    return false
   end
 
   BirdieSophieUIDB.layout = BirdieSophieUIDB.layout or {}
   BirdieSophieUIDB.layout.originalMovers = BirdieSophieUIDB.layout.originalMovers or {}
+  BirdieSophieUIDB.layout.originalSettings = BirdieSophieUIDB.layout.originalSettings or {}
 
   local changed = 0
   for moverName, position in pairs(moverPositions) do
@@ -183,10 +249,39 @@ function BSUI.ApplyClubhouseLayout()
     end
   end
 
+
+  local tuned = 0
+  for path, value in pairs(profileSettings) do
+    if BirdieSophieUIDB.layout.originalSettings[path] == nil then
+      local original = GetPath(engine.db, path)
+      BirdieSophieUIDB.layout.originalSettings[path] = original == nil and false or original
+    end
+    SetPath(engine.db, path, value)
+    tuned = tuned + 1
+  end
+
   BirdieSophieUIDB.layout.appliedProfile = PROFILE_ID
   BirdieSophieUIDB.layout.appliedAt = time()
-  Print(string.format("Clubhouse layout applied to %d ElvUI movers. /reload if one frame does not refresh.", changed))
+  RefreshElvUI(engine)
+  Print(string.format("Clubhouse layout applied to %d movers and %d profile settings. /reload if one frame does not refresh.", changed, tuned))
   Print("Details! stays in the right Caddie Zone; use /bsui preview as the placement guide.")
+  return true
+end
+
+function BSUI.InstallClubhouse()
+  if type(InCombatLockdown) == "function" and InCombatLockdown() then
+    Print("Command Deck installation is locked during combat.")
+    return
+  end
+
+  if not BSUI.ApplyClubhouseLayout() then
+    return
+  end
+  BirdieSophieUIDB.themeEnabled = true
+  if BSUI.RefreshClubhouseTheme then
+    BSUI.RefreshClubhouseTheme()
+  end
+  Print("Birdie Command Deck installed. Run /reload once, then /bsui alerttest.")
 end
 
 function BSUI.RestorePreviousLayout()
@@ -197,13 +292,14 @@ function BSUI.RestorePreviousLayout()
 
   local engine = ElvEngine()
   local saved = BirdieSophieUIDB.layout and BirdieSophieUIDB.layout.originalMovers
-  if not engine or not saved then
+  local savedSettings = BirdieSophieUIDB.layout and BirdieSophieUIDB.layout.originalSettings
+  if not engine or (not saved and not savedSettings) then
     Print("No previous ElvUI mover backup is available.")
     return
   end
 
   local restored = 0
-  for moverName, position in pairs(saved) do
+  for moverName, position in pairs(saved or {}) do
     if position == false then
       engine.db.movers[moverName] = nil
       if type(engine.SetMoverPoints) == "function" then
@@ -215,6 +311,18 @@ function BSUI.RestorePreviousLayout()
     restored = restored + 1
   end
 
+
+  local restoredSettings = 0
+  for path, value in pairs(savedSettings or {}) do
+    SetPath(engine.db, path, value == false and nil or value)
+    restoredSettings = restoredSettings + 1
+  end
+
   BirdieSophieUIDB.layout.appliedProfile = nil
-  Print(string.format("Previous ElvUI layout restored for %d movers.", restored))
+  BirdieSophieUIDB.themeEnabled = false
+  if BSUI.RefreshClubhouseTheme then
+    BSUI.RefreshClubhouseTheme()
+  end
+  RefreshElvUI(engine)
+  Print(string.format("Previous ElvUI layout restored for %d movers and %d settings.", restored, restoredSettings))
 end

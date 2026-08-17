@@ -2,7 +2,7 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.2.0"
+BSUI.version = "0.3.0"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -150,7 +150,22 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
     return
   end
 
-  Print("Commands: /bsui status, screen, preview, apply, restore")
+  if command == "install" and BSUI.InstallClubhouse then
+    BSUI.InstallClubhouse()
+    return
+  end
+
+  if command == "theme" and BSUI.ToggleClubhouseTheme then
+    BSUI.ToggleClubhouseTheme()
+    return
+  end
+
+  if command == "alerttest" and BSUI.TestAlert then
+    BSUI.TestAlert()
+    return
+  end
+
+  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, alerttest")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
@@ -161,6 +176,6 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
     if BSUI.InitializeLayout then
       BSUI.InitializeLayout()
     end
-    Print("NEXT TEE → /bsui preview")
+    Print("NEXT TEE → /bsui install")
   end
 end)

@@ -6,7 +6,7 @@ Birdie & Breakfast interface project for **Birdiesophie**, a Night Elf Druid in 
 
 The runtime target is confirmed at **3440 × 1440 / 2.389:1**. WoW reports a `2867 × 1200` UIParent at effective scale `0.640`. ElvUI, WeakAuras and Details! are all verified loaded in game.
 
-Version `0.2.0` introduces the first reversible Clubhouse layout pass: a four-zone preview plus backed-up ElvUI mover placement for the centered Combat Core, Clubhouse Comms, Caddie Zone and The Bag.
+Version `0.3.0` turns the reversible layout into a live **Birdie Command Deck**: branded scorecard framing, form-aware accents, combat dimming, central control-loss warnings and a target-debuff scorecard for Druid PvP.
 
 ## Goals
 
@@ -41,12 +41,15 @@ Addon versions must be validated against the installed TBC Classic client before
 - `/bsui status` — version and addon readiness
 - `/bsui screen` — physical and UI geometry
 - `/bsui preview` — toggle the branded zone guide
+- `/bsui install` — apply the supported ElvUI movers and enable the live Command Deck
 - `/bsui apply` — back up and apply supported ElvUI mover positions
 - `/bsui restore` — restore the backed-up mover positions
+- `/bsui theme` — toggle the Clubhouse shell without moving ElvUI
+- `/bsui alerttest` — show the CC and target-scorecard test state for five seconds
 
 ## Next build gate
 
-Run the `0.2.0` preview and layout in game, then capture one resting screenshot and one combat screenshot. Final unit-frame sizing, Details! placement and the form-aware WeakAura HUD remain downstream of that QA.
+Run `/bsui install`, `/reload` and `/bsui alerttest`, then capture one resting screenshot and one combat screenshot. Final unit-frame sizing, Details! placement and a richer WeakAura cooldown layer remain downstream of that QA.
 
 ## Source of truth
 
