@@ -2,7 +2,7 @@
 ## Title: BirdieSophieUI
 ## Notes: TeeBuilder Quiet Luxury System for Birdie & Breakfast
 ## Author: Birdie & Breakfast
-## Version: 0.42.0
+## Version: 0.43.0
 ## RequiredDeps: ElvUI
 ## OptionalDeps: WeakAuras, Details
 ## SavedVariables: BirdieSophieUIDB
@@ -25,3 +25,4 @@ HeroHUD.lua
 QuietLuxury.lua
 QuietChrome.lua
 QuietDetails.lua
+QuietStates.lua
