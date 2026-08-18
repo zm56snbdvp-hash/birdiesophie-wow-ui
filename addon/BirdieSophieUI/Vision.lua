@@ -1,46 +1,46 @@
 local addonName, BSUI = ...
 
-BSUI.version = "0.30.0"
-BSUI.build = "TEEBUILDER-HERO-SYSTEM-20260818-A"
+BSUI.version = "0.41.0"
+BSUI.build = "QUIET-SYSTEM-20260818-A"
 
-local VISION_ID = "teebuilder-hero-system-v1"
+local VISION_ID = "teebuilder-quiet-system-v1"
 
 local moverPositions = {
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,44",
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,44",
-  ShiftAB = "BOTTOM,ElvUIParent,BOTTOM,0,104",
-  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-160",
-  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-160",
-  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-170,-170",
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,34",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,34",
+  ShiftAB = "BOTTOM,ElvUIParent,BOTTOM,0,86",
+  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-150",
+  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-150",
+  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-178,-178",
 }
 
 local settings = {
-  ["general.fontSize"] = 12,
+  ["general.fontSize"] = 11,
   ["unitframe.units.player.enable"] = false,
   ["unitframe.units.target.enable"] = false,
   ["unitframe.units.targettarget.enable"] = false,
   ["unitframe.units.focus.enable"] = false,
   ["unitframe.units.pet.enable"] = false,
 
-  ["actionbar.fontSize"] = 11,
+  ["actionbar.fontSize"] = 10,
   ["actionbar.bar1.enabled"] = true,
-  ["actionbar.bar1.buttonsize"] = 46,
-  ["actionbar.bar1.buttonspacing"] = 5,
+  ["actionbar.bar1.buttonsize"] = 40,
+  ["actionbar.bar1.buttonspacing"] = 4,
   ["actionbar.bar1.buttons"] = 10,
   ["actionbar.bar2.enabled"] = false,
   ["actionbar.bar3.enabled"] = false,
 
   ["actionbar.stanceBar.enabled"] = true,
-  ["actionbar.stanceBar.buttonsize"] = 36,
-  ["actionbar.stanceBar.buttonspacing"] = 5,
+  ["actionbar.stanceBar.buttonsize"] = 30,
+  ["actionbar.stanceBar.buttonspacing"] = 4,
   ["actionbar.stanceBar.buttonsPerRow"] = 10,
   ["actionbar.stanceBar.backdrop"] = false,
   ["actionbar.stanceBar.mouseover"] = false,
 
-  ["chat.panelWidth"] = 300,
-  ["chat.panelHeight"] = 120,
+  ["chat.panelWidth"] = 290,
+  ["chat.panelHeight"] = 112,
   ["chat.fontSize"] = 10,
-  ["cooldown.fontSize"] = 14,
+  ["cooldown.fontSize"] = 12,
 }
 
 local function Parts(path)
@@ -90,7 +90,7 @@ end
 local function CenterStance()
   for _, name in ipairs({ "ElvUI_StanceBar", "ElvUI_StanceBarHolder", "StanceBar" }) do
     local f = _G[name]
-    if f then Move(f, "BOTTOM", "BOTTOM", 0, 104); break end
+    if f then Move(f, "BOTTOM", "BOTTOM", 0, 86); break end
   end
 end
 
@@ -112,13 +112,15 @@ local function RuntimeCleanup()
     "BirdieSophieClubhouseShell", "BirdieSophieCombatCore", "BirdieSophieMouseoverCaddie",
     "BirdieSophieTargetDebuffs", "BirdieSophiePlayerHots", "BirdieSophieLevelCaddie",
     "BirdieSophieUtilityBag", "BirdieSophieCaddieWarning", "ElvUF_Player", "ElvUF_Target",
-    "ElvUF_TargetTarget", "ElvUF_Focus", "ElvUF_Pet", "ElvUI_Bar2", "ElvUI_Bar3"
+    "ElvUF_TargetTarget", "ElvUF_Focus", "ElvUF_Pet", "ElvUI_Bar2", "ElvUI_Bar3",
+    "TeeBuilderNightPlayer", "TeeBuilderNightTarget", "TeeBuilderNightActionStage",
+    "TeeBuilderHeroPlayer", "TeeBuilderHeroTarget", "TeeBuilderActionStage", "TeeBuilderHeroSignature"
   }) do Hide(name) end
 
-  Move(_G.ElvUI_Bar1, "BOTTOM", "BOTTOM", 0, 44)
+  Move(_G.ElvUI_Bar1, "BOTTOM", "BOTTOM", 0, 34)
   CenterStance()
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 12, 14, 300, 120)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -12, 14, 292, 118)
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 14, 16, 290, 112)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -14, 16, 280, 112)
 end
 
 local function ApplyVision()
@@ -131,8 +133,8 @@ local function ApplyVision()
   end
 
   RuntimeCleanup()
-  if BSUI.ApplyHeroHUD then pcall(BSUI.ApplyHeroHUD) end
-  if BSUI.ApplyHeroLayer then pcall(BSUI.ApplyHeroLayer) end
+  if BSUI.ApplyQuietLuxury then pcall(BSUI.ApplyQuietLuxury) end
+  if BSUI.ApplyQuietChrome then pcall(BSUI.ApplyQuietChrome) end
   BirdieSophieUIDB.vision = { id = VISION_ID, build = BSUI.build, appliedAt = time() }
 end
 
