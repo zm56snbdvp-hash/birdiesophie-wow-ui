@@ -4,6 +4,9 @@ local addonName, BSUI = ...
 -- Peripheral UI should whisper: thin rails, low-alpha forest glass and tiny labels.
 -- No heavy boxes; the WoW world stays the hero.
 
+BSUI.version = "0.41.0"
+BSUI.build = "QUIET-SYSTEM-20260818-A"
+
 local GOLD = {0.72, 0.58, 0.31}
 local GOLD_HI = {0.88, 0.74, 0.43}
 local CREAM = {0.94, 0.91, 0.82}
@@ -53,7 +56,7 @@ local function Wrap(frame, label, topOffset)
   Cap(shell, "LEFT", 0.38)
   Cap(shell, "RIGHT", 0.38)
 
-  local title = Font(shell, 8, GOLD, "OUTLINE")
+  local title = Font(shell, 8, GOLD)
   title:SetPoint("TOPLEFT", shell, "TOPLEFT", 12, -5)
   title:SetText(label)
   title:SetAlpha(0.72)
