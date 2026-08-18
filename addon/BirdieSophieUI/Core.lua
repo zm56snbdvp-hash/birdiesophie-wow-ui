@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.19.0"
-BSUI.build = "SIGNATURE-REFINE-20260818-A"
+BSUI.version = "0.21.0"
+BSUI.build = "TEEBUILDER-HERO-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -119,6 +119,6 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
   elseif event == "PLAYER_LOGIN" then
     if BSUI.InitializeModules then BSUI.InitializeModules() end
     if BSUI.InitializeLayout then BSUI.InitializeLayout() end
-    Print("NEXT TEE → /bsui install")
+    Print("TEEBUILDER HERO → /bsui install")
   end
 end)
