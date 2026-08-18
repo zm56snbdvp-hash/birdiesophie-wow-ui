@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.10.0"
-BSUI.build = "TEE-LINE-20260818-A"
+BSUI.version = "0.13.0"
+BSUI.build = "PAIRING-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
