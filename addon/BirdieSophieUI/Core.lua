@@ -2,7 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.6.0"
+BSUI.version = "0.8.0"
+BSUI.build = "VISION-RESET-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -120,7 +121,7 @@ end
 local function ShowStatus()
   local deps = DependencyState()
   local display = RefreshDisplayState()
-  Print("UI v" .. BSUI.version .. " — WELCOME TO THE CLUBHOUSE.")
+  Print("UI v" .. BSUI.version .. " — build " .. BSUI.build)
   Print("Canvas: " .. display.width .. "x" .. display.height .. (display.provisional and " (provisional)" or "") .. " via " .. display.source)
   Print("ElvUI: " .. (deps.ElvUI and "ready" or "missing") .. ", WeakAuras: " .. (deps.WeakAuras and "ready" or "missing") .. ", Details!: " .. (deps.Details and "ready" or "missing"))
 end
@@ -186,6 +187,7 @@ end
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
   if event == "ADDON_LOADED" and loadedAddon == addonName then
     BirdieSophieUIDB.version = BSUI.version
+    BirdieSophieUIDB.build = BSUI.build
     if BSUI.InitializeModules then
       BSUI.InitializeModules()
     end
