@@ -1,27 +1,31 @@
 local addonName, BSUI = ...
 
--- v0.9 Vision Reset
--- Goal: the resting screen must feel calm. Only core combat information is
--- permanent; secondary telemetry and ornamental shell layers are suppressed.
+-- v0.10 Tee Line
+-- A calm permanent baseline inspired by the approved reference: two mirrored
+-- unit frames, two action rows, open character sightline, peripheral utility.
 
-BSUI.version = "0.9.0"
-BSUI.build = "VISION-RESET-20260818-B"
+BSUI.version = "0.10.0"
+BSUI.build = "TEE-LINE-20260818-A"
 
-local VISION_ID = "quiet-clubhouse-v1"
+local VISION_ID = "tee-line-v1"
 
 local moverPositions = {
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-430,300",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,430,300",
-  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-640,300",
-  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,640,300",
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-430,385",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,405",
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-355,285",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,355,285",
+  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-560,285",
+  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,560,285",
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-355,365",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,385",
+
   ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,54",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,100",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,146",
+  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,101",
+  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,148",
   ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,54",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,100",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,146",
+  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,101",
+  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,148",
+
+  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,38,-180",
+  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,38,-180",
   ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-275,-175",
 }
 
@@ -29,50 +33,54 @@ local settings = {
   ["general.fontSize"] = 12,
   ["unitframe.fontSize"] = 12,
 
-  ["unitframe.units.player.width"] = 360,
-  ["unitframe.units.player.height"] = 62,
+  ["unitframe.units.player.width"] = 330,
+  ["unitframe.units.player.height"] = 70,
   ["unitframe.units.player.portrait.enable"] = true,
   ["unitframe.units.player.portrait.style"] = "3D",
   ["unitframe.units.player.portrait.overlay"] = false,
-  ["unitframe.units.player.portrait.width"] = 58,
-  ["unitframe.units.player.power.height"] = 13,
-  ["unitframe.units.player.health.text_format"] = "[health:percent]",
+  ["unitframe.units.player.portrait.width"] = 60,
+  ["unitframe.units.player.power.height"] = 12,
+  ["unitframe.units.player.health.text_format"] = "[health:current]",
   ["unitframe.units.player.power.text_format"] = "[power:current]",
   ["unitframe.units.player.name.text_format"] = "[name:medium]",
   ["unitframe.units.player.buffs.enable"] = false,
 
-  ["unitframe.units.target.width"] = 360,
-  ["unitframe.units.target.height"] = 62,
+  ["unitframe.units.target.width"] = 330,
+  ["unitframe.units.target.height"] = 70,
   ["unitframe.units.target.portrait.enable"] = true,
   ["unitframe.units.target.portrait.style"] = "3D",
   ["unitframe.units.target.portrait.overlay"] = false,
-  ["unitframe.units.target.portrait.width"] = 58,
-  ["unitframe.units.target.power.height"] = 13,
-  ["unitframe.units.target.health.text_format"] = "[health:percent]",
+  ["unitframe.units.target.portrait.width"] = 60,
+  ["unitframe.units.target.power.height"] = 12,
+  ["unitframe.units.target.health.text_format"] = "[health:current]",
   ["unitframe.units.target.power.text_format"] = "[power:current]",
   ["unitframe.units.target.name.text_format"] = "[name:medium]",
   ["unitframe.units.target.debuffs.enable"] = false,
 
-  ["unitframe.units.focus.width"] = 220,
-  ["unitframe.units.focus.height"] = 44,
-  ["unitframe.units.pet.width"] = 150,
-  ["unitframe.units.pet.height"] = 28,
+  ["unitframe.units.focus.width"] = 190,
+  ["unitframe.units.focus.height"] = 38,
+  ["unitframe.units.pet.width"] = 130,
+  ["unitframe.units.pet.height"] = 26,
 
-  ["actionbar.fontSize"] = 11,
-  ["actionbar.bar1.buttonsize"] = 40,
+  ["unitframe.colors.health"] = { r = 0.10, g = 0.30, b = 0.21 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.018, g = 0.040, b = 0.032 },
+  ["general.backdropcolor"] = { r = 0.018, g = 0.030, b = 0.026 },
+  ["general.bordercolor"] = { r = 0.61, g = 0.50, b = 0.29 },
+  ["general.valuecolor"] = { r = 0.78, g = 0.65, b = 0.39 },
+
+  ["actionbar.fontSize"] = 10,
+  ["actionbar.bar1.buttonsize"] = 38,
   ["actionbar.bar1.buttonspacing"] = 4,
   ["actionbar.bar1.buttons"] = 10,
-  ["actionbar.bar2.buttonsize"] = 36,
+  ["actionbar.bar2.buttonsize"] = 34,
   ["actionbar.bar2.buttonspacing"] = 4,
   ["actionbar.bar2.buttons"] = 10,
-  ["actionbar.bar3.buttonsize"] = 30,
-  ["actionbar.bar3.buttonspacing"] = 3,
-  ["actionbar.bar3.buttons"] = 8,
+  ["actionbar.bar3.enabled"] = false,
 
-  ["chat.panelWidth"] = 420,
-  ["chat.panelHeight"] = 180,
-  ["chat.fontSize"] = 12,
-  ["cooldown.fontSize"] = 14,
+  ["chat.panelWidth"] = 400,
+  ["chat.panelHeight"] = 165,
+  ["chat.fontSize"] = 11,
+  ["cooldown.fontSize"] = 13,
 }
 
 local function Parts(path)
@@ -122,7 +130,6 @@ local function Move(frame, point, relativePoint, x, y, width, height)
 end
 
 local function QuietRuntime()
-  -- Remove the permanent branded dashboard shell. Combat widgets remain active.
   BirdieSophieUIDB.themeEnabled = false
   if BSUI.RefreshClubhouseTheme then pcall(BSUI.RefreshClubhouseTheme) end
   if BSUI.SetRuntimeActive then BSUI.SetRuntimeActive(true) end
@@ -138,15 +145,13 @@ local function QuietRuntime()
 
   local shell = _G.BirdieSophieClubhouseShell
   if shell then shell:Hide() end
-
   local level = _G.BirdieSophieLevelCaddie
   if level then level:Hide() end
   local bag = _G.BirdieSophieUtilityBag
   if bag then bag:Hide() end
 
-  -- Keep peripheral utility genuinely peripheral and smaller.
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 22, 28, 420, 180)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -22, 28, 420, 180)
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 22, 24, 400, 165)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -22, 24, 400, 165)
 end
 
 local function ApplyVision()
