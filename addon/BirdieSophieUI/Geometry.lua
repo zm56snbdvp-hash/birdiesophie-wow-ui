@@ -1,38 +1,45 @@
 local addonName, BSUI = ...
 
--- v0.7.1 reference-driven geometry pass for the confirmed 3440x1440 layout.
--- The center stays visually open around Birdietee; mirrored unit frames, aura
--- scorecards and cast information sit in deliberate horizontal bands.
+-- v0.7.1 live-screenshot refinement for the confirmed 3440x1440 layout.
+-- Keep the character sightline open and separate primary unit frames, compact
+-- command information, aura scorecards and action bars into distinct bands.
 
-local GEOMETRY_ID = "deep-clubhouse-3440x1440-v6"
+local GEOMETRY_ID = "deep-clubhouse-3440x1440-v7"
 
 local measuredMovers = {
-  -- Mirrored primary unit frames, low enough for quick reading but clear of the Command Deck.
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-390,390",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,390,390",
+  -- Primary unit frames: mirrored farther apart, like the approved reference.
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-520,360",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,520,360",
 
-  -- Supporting unit frames remain subordinate and outside the center sightline.
-  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-620,390",
-  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,690,390",
+  -- Supporting frames stay peripheral to the player/target pair.
+  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-760,360",
+  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,760,360",
 
-  -- Cast bars sit above the mirrored unit-frame band.
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-390,500",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,500",
+  -- Cast information sits above the primary unit-frame band.
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-520,470",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,470",
 
-  -- Bottom-center action hierarchy: three compact bands with clear separation.
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,76",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,138",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,198",
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,76",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,138",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,198",
+  -- Bottom hierarchy: two main action rows plus one compact utility/form row.
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,92",
+  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,152",
+  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,212",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,92",
+  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,152",
+  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,212",
 }
 
 local runtimeFrames = {
-  BirdieSophieCombatCore = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 276 },
-  BirdieSophiePlayerHots = { point = "BOTTOM", relative = "BOTTOM", x = -455, y = 515 },
-  BirdieSophieTargetDebuffs = { point = "BOTTOM", relative = "BOTTOM", x = 455, y = 515 },
+  -- Compact Command Deck centered between the unit frames and action rows.
+  BirdieSophieCombatCore = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 286 },
+
+  -- Symmetric aura cards above the player/target frames.
+  BirdieSophiePlayerHots = { point = "BOTTOM", relative = "BOTTOM", x = -520, y = 500 },
+  BirdieSophieTargetDebuffs = { point = "BOTTOM", relative = "BOTTOM", x = 520, y = 500 },
+
+  -- Contextual mouseover stays centered but above the unit-frame band.
   BirdieSophieMouseoverCaddie = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 430 },
+
+  -- Peripheral telemetry and bottom utility remain out of the combat sightline.
   BirdieSophieLevelCaddie = { point = "BOTTOMRIGHT", relative = "BOTTOMRIGHT", x = -38, y = 314 },
   BirdieSophieUtilityBag = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 10 },
 }
@@ -89,8 +96,6 @@ local function ApplyMeasuredGeometry()
   return changed, ReanchorRuntimeFrames()
 end
 
--- Layout.lua still owns backup/restore and the broad ElvUI profile application.
--- This wrapper applies the visual-reference geometry as the final placement pass.
 local originalApply = BSUI.ApplyClubhouseLayout
 if type(originalApply) == "function" then
   function BSUI.ApplyClubhouseLayout()
@@ -103,8 +108,6 @@ if type(originalApply) == "function" then
   end
 end
 
--- Runtime frames are created by later modules, so repeat only their harmless
--- anchoring after entering the world. No protected actions are executed.
 local events = CreateFrame("Frame")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
 events:SetScript("OnEvent", function()
