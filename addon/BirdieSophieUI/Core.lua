@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.41.0"
-BSUI.build = "QUIET-SYSTEM-20260818-A"
+BSUI.version = "0.44.0"
+BSUI.build = "QUIET-PIPELINE-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -97,6 +97,13 @@ local function ShowStatus()
   Print("ElvUI: " .. (deps.ElvUI and "ready" or "missing") .. ", WeakAuras: " .. (deps.WeakAuras and "ready" or "missing") .. ", Details!: " .. (deps.Details and "ready" or "missing"))
 end
 
+local function RefreshQuiet()
+  if BSUI.ApplyQuietLuxury then BSUI.ApplyQuietLuxury() end
+  if BSUI.ApplyQuietChrome then BSUI.ApplyQuietChrome() end
+  if BSUI.ApplyQuietDetails then BSUI.ApplyQuietDetails() end
+  if BSUI.ApplyQuietStates then BSUI.ApplyQuietStates() end
+end
+
 SLASH_BIRDIESOPHIEUI1 = "/bsui"
 SlashCmdList.BIRDIESOPHIEUI = function(message)
   local input = string.lower(strtrim(message or ""))
@@ -112,8 +119,8 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
   if command == "alerttest" and BSUI.TestAlert then BSUI.TestAlert(); return end
   if command == "modules" and BSUI.ShowModules then BSUI.ShowModules(); return end
   if command == "module" and BSUI.ModuleCommand then BSUI.ModuleCommand(arguments); return end
-  if command == "hero" and BSUI.ApplyQuietLuxury then BSUI.ApplyQuietLuxury(); if BSUI.ApplyQuietChrome then BSUI.ApplyQuietChrome() end; Print("Quiet Luxury refreshed."); return end
-  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest, hero")
+  if command == "hero" or command == "quiet" then RefreshQuiet(); Print("Quiet Luxury refreshed."); return end
+  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest, hero, quiet")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
@@ -125,6 +132,6 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
   elseif event == "PLAYER_LOGIN" then
     if BSUI.InitializeModules then BSUI.InitializeModules() end
     if BSUI.InitializeLayout then BSUI.InitializeLayout() end
-    Print("QUIET LUXURY ONLINE → /bsui status")
+    Print("QUIET PIPELINE ONLINE → /bsui status")
   end
 end)
