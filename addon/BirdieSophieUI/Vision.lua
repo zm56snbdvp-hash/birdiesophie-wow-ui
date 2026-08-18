@@ -1,13 +1,14 @@
 local addonName, BSUI = ...
 
--- v0.16 Premium Baseline
--- Keep the clean paired unit frames, force both action rows into the true center
--- and remove the last stray ElvUI bars that visually compete with the target.
+-- v0.17 Stance Line + premium frame accents
+-- The live screenshot revealed that the six-icon row is the druid stance/form bar,
+-- not a second normal action bar. Make that the intentional upper row and keep one
+-- clean main action row below it. Add a restrained champagne edge to the paired frames.
 
-BSUI.version = "0.16.0"
-BSUI.build = "PREMIUM-BASELINE-20260818-A"
+BSUI.version = "0.17.0"
+BSUI.build = "STANCE-LINE-20260818-A"
 
-local VISION_ID = "premium-baseline-v1"
+local VISION_ID = "stance-line-v1"
 
 local moverPositions = {
   ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-230,248",
@@ -15,12 +16,10 @@ local moverPositions = {
   ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-230,318",
   ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,230,318",
 
+  -- Main combat row + centered druid form row.
   ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,44",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,82",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,120",
   ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,44",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,82",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,120",
+  ShiftAB = "BOTTOM,ElvUIParent,BOTTOM,0,86",
 
   ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,26,-145",
   ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,26,-145",
@@ -65,26 +64,32 @@ local settings = {
   ["unitframe.units.focus.enable"] = false,
   ["unitframe.units.pet.enable"] = false,
 
-  ["unitframe.colors.health"] = { r = 0.056, g = 0.168, b = 0.123 },
-  ["unitframe.colors.health_backdrop"] = { r = 0.007, g = 0.015, b = 0.013 },
-  ["unitframe.colors.power.MANA"] = { r = 0.085, g = 0.245, b = 0.31 },
-  ["unitframe.colors.power.ENERGY"] = { r = 0.62, g = 0.48, b = 0.17 },
-  ["unitframe.colors.power.RAGE"] = { r = 0.50, g = 0.16, b = 0.12 },
-  ["general.backdropcolor"] = { r = 0.007, g = 0.014, b = 0.012 },
-  ["general.bordercolor"] = { r = 0.70, g = 0.58, b = 0.34 },
-  ["general.valuecolor"] = { r = 0.80, g = 0.68, b = 0.40 },
+  ["unitframe.colors.health"] = { r = 0.050, g = 0.150, b = 0.110 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.006, g = 0.013, b = 0.011 },
+  ["unitframe.colors.power.MANA"] = { r = 0.080, g = 0.225, b = 0.285 },
+  ["unitframe.colors.power.ENERGY"] = { r = 0.60, g = 0.46, b = 0.16 },
+  ["unitframe.colors.power.RAGE"] = { r = 0.48, g = 0.15, b = 0.11 },
+  ["general.backdropcolor"] = { r = 0.006, g = 0.012, b = 0.010 },
+  ["general.bordercolor"] = { r = 0.72, g = 0.59, b = 0.34 },
+  ["general.valuecolor"] = { r = 0.82, g = 0.69, b = 0.40 },
 
   ["actionbar.fontSize"] = 10,
+  ["actionbar.bar1.enabled"] = true,
   ["actionbar.bar1.buttonsize"] = 34,
   ["actionbar.bar1.buttonspacing"] = 3,
   ["actionbar.bar1.buttons"] = 10,
-  ["actionbar.bar2.buttonsize"] = 31,
-  ["actionbar.bar2.buttonspacing"] = 3,
-  ["actionbar.bar2.buttons"] = 10,
+  ["actionbar.bar2.enabled"] = false,
   ["actionbar.bar3.enabled"] = false,
 
-  ["chat.panelWidth"] = 305,
-  ["chat.panelHeight"] = 126,
+  ["actionbar.stanceBar.enabled"] = true,
+  ["actionbar.stanceBar.buttonsize"] = 30,
+  ["actionbar.stanceBar.buttonspacing"] = 3,
+  ["actionbar.stanceBar.buttonsPerRow"] = 10,
+  ["actionbar.stanceBar.backdrop"] = false,
+  ["actionbar.stanceBar.mouseover"] = false,
+
+  ["chat.panelWidth"] = 300,
+  ["chat.panelHeight"] = 124,
   ["chat.fontSize"] = 10,
   ["cooldown.fontSize"] = 12,
 }
@@ -119,7 +124,7 @@ local function ApplyMovers(engine)
     local available = (engine.CreatedMovers and engine.CreatedMovers[name])
       or (engine.DisabledMovers and engine.DisabledMovers[name])
       or engine.db.movers[name] ~= nil
-    if available then
+    if available or name == "ShiftAB" then
       engine.db.movers[name] = position
       if type(engine.SetMoverPoints) == "function" then pcall(engine.SetMoverPoints, engine, name) end
     end
@@ -136,6 +141,43 @@ end
 local function HideFrame(name)
   local frame = _G[name]
   if frame and type(frame.Hide) == "function" then frame:Hide() end
+end
+
+local function AccentFrame(target, name)
+  if not target or _G[name] then return end
+  local accent = CreateFrame("Frame", name, target)
+  accent:SetPoint("TOPLEFT", target, "TOPLEFT", -2, 2)
+  accent:SetPoint("BOTTOMRIGHT", target, "BOTTOMRIGHT", 2, -2)
+  accent:SetFrameLevel(math.max(0, target:GetFrameLevel() - 1))
+
+  local dark = accent:CreateTexture(nil, "BACKGROUND")
+  dark:SetPoint("TOPLEFT", accent, "TOPLEFT", 0, 0)
+  dark:SetPoint("BOTTOMRIGHT", accent, "BOTTOMRIGHT", 0, 0)
+  dark:SetColorTexture(0.008, 0.012, 0.010, 0.82)
+
+  local top = accent:CreateTexture(nil, "BORDER")
+  top:SetPoint("TOPLEFT", accent, "TOPLEFT", 1, -1)
+  top:SetPoint("TOPRIGHT", accent, "TOPRIGHT", -1, -1)
+  top:SetHeight(1)
+  top:SetColorTexture(0.82, 0.69, 0.40, 0.92)
+
+  local bottom = accent:CreateTexture(nil, "BORDER")
+  bottom:SetPoint("BOTTOMLEFT", accent, "BOTTOMLEFT", 1, 1)
+  bottom:SetPoint("BOTTOMRIGHT", accent, "BOTTOMRIGHT", -1, 1)
+  bottom:SetHeight(1)
+  bottom:SetColorTexture(0.82, 0.69, 0.40, 0.48)
+end
+
+local function CenterStanceBar()
+  -- ElvUI uses the ShiftAB mover for the stance/form bar in Classic-era layouts.
+  -- Direct frame fallbacks make the placement resilient across ElvUI builds.
+  for _, frameName in ipairs({ "ElvUI_StanceBar", "ElvUI_StanceBarHolder", "StanceBar" }) do
+    local stance = _G[frameName]
+    if stance then
+      Move(stance, "BOTTOM", "BOTTOM", 0, 86)
+      break
+    end
+  end
 end
 
 local function QuietRuntime()
@@ -157,18 +199,19 @@ local function QuietRuntime()
     "BirdieSophieTargetDebuffs", "BirdieSophiePlayerHots", "BirdieSophieLevelCaddie",
     "BirdieSophieUtilityBag", "BirdieSophieCaddieWarning", "ElvUF_TargetTarget",
     "ElvUF_TargetTargetTarget", "ElvUF_Focus", "ElvUF_Pet",
+    "ElvUI_Bar2", "ElvUI_Bar3",
   }) do
     HideFrame(frameName)
   end
 
-  -- Force the two real action bars into the same visual center even if this
-  -- ElvUI build ignores one of the legacy mover names.
   Move(_G.ElvUI_Bar1, "BOTTOM", "BOTTOM", 0, 44)
-  Move(_G.ElvUI_Bar2, "BOTTOM", "BOTTOM", 0, 82)
-  HideFrame("ElvUI_Bar3")
+  CenterStanceBar()
 
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 12, 14, 305, 126)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -12, 14, 300, 124)
+  AccentFrame(_G.ElvUF_Player, "BirdiePremiumPlayerAccent")
+  AccentFrame(_G.ElvUF_Target, "BirdiePremiumTargetAccent")
+
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 12, 14, 300, 124)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -12, 14, 295, 122)
 end
 
 local function ApplyVision()
