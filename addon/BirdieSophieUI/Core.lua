@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.14.0"
-BSUI.build = "PAIR-POLISH-20260818-A"
+BSUI.version = "0.15.0"
+BSUI.build = "FRAME-POLISH-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -35,18 +35,12 @@ end
 BSUI.Print = Print
 
 local function IsLoaded(name)
-  if C_AddOns and C_AddOns.IsAddOnLoaded then
-    return C_AddOns.IsAddOnLoaded(name)
-  end
+  if C_AddOns and C_AddOns.IsAddOnLoaded then return C_AddOns.IsAddOnLoaded(name) end
   return IsAddOnLoaded(name)
 end
 
 local function DependencyState()
-  return {
-    ElvUI = IsLoaded("ElvUI"),
-    WeakAuras = IsLoaded("WeakAuras"),
-    Details = IsLoaded("Details"),
-  }
+  return { ElvUI = IsLoaded("ElvUI"), WeakAuras = IsLoaded("WeakAuras"), Details = IsLoaded("Details") }
 end
 
 local function ReadResolutionCVar(name)
@@ -60,9 +54,7 @@ end
 local function PhysicalScreenSize()
   if type(GetPhysicalScreenSize) == "function" then
     local width, height = GetPhysicalScreenSize()
-    if width and height and width > 0 and height > 0 then
-      return width, height, "physical API"
-    end
+    if width and height and width > 0 and height > 0 then return width, height, "physical API" end
   end
   local width, height = ReadResolutionCVar("gxWindowedResolution")
   if not width or not height then width, height = ReadResolutionCVar("gxResolution") end
@@ -81,15 +73,7 @@ local function RefreshDisplayState()
   BSUI.display.effectiveScale = effectiveScale
   BSUI.display.source = source
   BSUI.display.provisional = physicalWidth == nil or physicalHeight == nil
-  BirdieSophieUIDB.lastDisplay = {
-    width = BSUI.display.width,
-    height = BSUI.display.height,
-    uiWidth = uiWidth,
-    uiHeight = uiHeight,
-    effectiveScale = effectiveScale,
-    source = source,
-    provisional = BSUI.display.provisional,
-  }
+  BirdieSophieUIDB.lastDisplay = { width = BSUI.display.width, height = BSUI.display.height, uiWidth = uiWidth, uiHeight = uiHeight, effectiveScale = effectiveScale, source = source, provisional = BSUI.display.provisional }
   return BSUI.display
 end
 
