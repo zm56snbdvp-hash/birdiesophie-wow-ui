@@ -2,6 +2,15 @@
 
 All meaningful profile and architecture changes are recorded here.
 
+## 0.7.0 — 2026-08-18
+
+- Add the first measured native-screenshot geometry pass after `/bsui install` at 3440 × 1440.
+- Separate the 470 × 92 player/target unit-frame band from the 820 × 94 Birdie Command Deck so they no longer share the same vertical range.
+- Raise player and target movers to Y=400 while keeping the Command Deck in its existing lower combat band.
+- Move player and target cast bars above the portrait frames instead of through the central deck.
+- Keep Pet and Focus in supporting bands and preserve the existing `/bsui restore` ownership model by applying the measured positions only after the normal reversible layout pass.
+- No new gameplay automation or information modules are introduced; this release is a geometry/readability correction driven by the first real installed screenshot.
+
 ## 0.6.0 — 2026-08-17
 
 - Replace the former one-pixel debug aesthetic with a custom Birdie & Breakfast material system: dark forest leather/wood texture, subtle golf-ball dimples, layered brass rails, ornamental leaf corners, Birdie Coins and a rendered B&B Night Tee seal.

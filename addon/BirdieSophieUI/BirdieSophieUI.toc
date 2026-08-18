@@ -2,7 +2,7 @@
 ## Title: BirdieSophieUI
 ## Notes: Birdie & Breakfast interface companion for Birdiesophie
 ## Author: Birdie & Breakfast
-## Version: 0.6.0
+## Version: 0.7.0
 ## RequiredDeps: ElvUI
 ## OptionalDeps: WeakAuras, Details
 ## SavedVariables: BirdieSophieUIDB
@@ -12,6 +12,7 @@ Art.lua
 Modules.lua
 State.lua
 Layout.lua
+Geometry.lua
 Theme.lua
 CombatCore.lua
 Mouseover.lua
