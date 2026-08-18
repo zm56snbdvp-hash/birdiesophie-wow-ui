@@ -1,86 +1,95 @@
 local addonName, BSUI = ...
 
--- v0.10 Tee Line
--- A calm permanent baseline inspired by the approved reference: two mirrored
--- unit frames, two action rows, open character sightline, peripheral utility.
+-- v0.11 Composition Pass
+-- Preserve the calm Tee Line baseline, but make the combat core read as one
+-- intentional composition: mirrored player/target, two centered action rows,
+-- and a clear character sightline between them.
 
-BSUI.version = "0.10.0"
-BSUI.build = "TEE-LINE-20260818-A"
+BSUI.version = "0.11.0"
+BSUI.build = "COMPOSITION-20260818-A"
 
-local VISION_ID = "tee-line-v1"
+local VISION_ID = "composition-v1"
 
 local moverPositions = {
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-355,285",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,355,285",
-  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-560,285",
-  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,560,285",
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-355,365",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,385",
+  -- Mirrored primary frames: close enough to read as a pair, far enough to keep
+  -- Birdietee and the central cast lane unobstructed.
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-300,265",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,300,265",
 
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,54",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,101",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,148",
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,54",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,101",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,148",
+  -- Supporting frames stay subordinate and outside the primary pair.
+  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-485,265",
+  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,485,265",
 
-  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,38,-180",
-  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,38,-180",
-  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-275,-175",
+  -- Cast bars occupy the center lane above the unit-frame pair.
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-300,344",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,372",
+
+  -- Two permanent action rows. Bar 3 remains disabled.
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,52",
+  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,96",
+  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,140",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,52",
+  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,96",
+  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,140",
+
+  -- Group information stays peripheral.
+  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,34,-165",
+  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,34,-165",
+  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-245,-165",
 }
 
 local settings = {
-  ["general.fontSize"] = 12,
-  ["unitframe.fontSize"] = 12,
+  ["general.fontSize"] = 11,
+  ["unitframe.fontSize"] = 11,
 
-  ["unitframe.units.player.width"] = 330,
-  ["unitframe.units.player.height"] = 70,
+  ["unitframe.units.player.width"] = 300,
+  ["unitframe.units.player.height"] = 64,
   ["unitframe.units.player.portrait.enable"] = true,
   ["unitframe.units.player.portrait.style"] = "3D",
   ["unitframe.units.player.portrait.overlay"] = false,
-  ["unitframe.units.player.portrait.width"] = 60,
-  ["unitframe.units.player.power.height"] = 12,
+  ["unitframe.units.player.portrait.width"] = 54,
+  ["unitframe.units.player.power.height"] = 10,
   ["unitframe.units.player.health.text_format"] = "[health:current]",
   ["unitframe.units.player.power.text_format"] = "[power:current]",
   ["unitframe.units.player.name.text_format"] = "[name:medium]",
   ["unitframe.units.player.buffs.enable"] = false,
 
-  ["unitframe.units.target.width"] = 330,
-  ["unitframe.units.target.height"] = 70,
+  ["unitframe.units.target.width"] = 300,
+  ["unitframe.units.target.height"] = 64,
   ["unitframe.units.target.portrait.enable"] = true,
   ["unitframe.units.target.portrait.style"] = "3D",
   ["unitframe.units.target.portrait.overlay"] = false,
-  ["unitframe.units.target.portrait.width"] = 60,
-  ["unitframe.units.target.power.height"] = 12,
+  ["unitframe.units.target.portrait.width"] = 54,
+  ["unitframe.units.target.power.height"] = 10,
   ["unitframe.units.target.health.text_format"] = "[health:current]",
   ["unitframe.units.target.power.text_format"] = "[power:current]",
   ["unitframe.units.target.name.text_format"] = "[name:medium]",
   ["unitframe.units.target.debuffs.enable"] = false,
 
-  ["unitframe.units.focus.width"] = 190,
-  ["unitframe.units.focus.height"] = 38,
-  ["unitframe.units.pet.width"] = 130,
-  ["unitframe.units.pet.height"] = 26,
+  ["unitframe.units.focus.width"] = 165,
+  ["unitframe.units.focus.height"] = 34,
+  ["unitframe.units.pet.width"] = 112,
+  ["unitframe.units.pet.height"] = 24,
 
-  ["unitframe.colors.health"] = { r = 0.10, g = 0.30, b = 0.21 },
-  ["unitframe.colors.health_backdrop"] = { r = 0.018, g = 0.040, b = 0.032 },
-  ["general.backdropcolor"] = { r = 0.018, g = 0.030, b = 0.026 },
-  ["general.bordercolor"] = { r = 0.61, g = 0.50, b = 0.29 },
+  ["unitframe.colors.health"] = { r = 0.085, g = 0.27, b = 0.19 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.014, g = 0.032, b = 0.026 },
+  ["general.backdropcolor"] = { r = 0.014, g = 0.024, b = 0.021 },
+  ["general.bordercolor"] = { r = 0.55, g = 0.45, b = 0.27 },
   ["general.valuecolor"] = { r = 0.78, g = 0.65, b = 0.39 },
 
   ["actionbar.fontSize"] = 10,
-  ["actionbar.bar1.buttonsize"] = 38,
-  ["actionbar.bar1.buttonspacing"] = 4,
+  ["actionbar.bar1.buttonsize"] = 36,
+  ["actionbar.bar1.buttonspacing"] = 3,
   ["actionbar.bar1.buttons"] = 10,
   ["actionbar.bar2.buttonsize"] = 34,
-  ["actionbar.bar2.buttonspacing"] = 4,
+  ["actionbar.bar2.buttonspacing"] = 3,
   ["actionbar.bar2.buttons"] = 10,
   ["actionbar.bar3.enabled"] = false,
 
-  ["chat.panelWidth"] = 400,
-  ["chat.panelHeight"] = 165,
-  ["chat.fontSize"] = 11,
-  ["cooldown.fontSize"] = 13,
+  ["chat.panelWidth"] = 360,
+  ["chat.panelHeight"] = 150,
+  ["chat.fontSize"] = 10,
+  ["cooldown.fontSize"] = 12,
 }
 
 local function Parts(path)
@@ -150,8 +159,10 @@ local function QuietRuntime()
   local bag = _G.BirdieSophieUtilityBag
   if bag then bag:Hide() end
 
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 22, 24, 400, 165)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -22, 24, 400, 165)
+  -- Keep analysis on the extreme sides. They should never compete with the
+  -- player/target pair or action rows.
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 18, 20, 360, 150)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -18, 20, 360, 150)
 end
 
 local function ApplyVision()
