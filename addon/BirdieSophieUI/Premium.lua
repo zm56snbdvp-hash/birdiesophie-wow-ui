@@ -1,72 +1,92 @@
 local addonName, BSUI = ...
 
--- v0.20 Signature Overhaul visual layer.
--- Stronger BirdieTee identity: larger unit shells, cleaner portrait framing,
--- centered labels, shared action foundation and restrained champagne hardware.
+-- v0.21 TeeBuilder Hero premium visual system.
+-- Product-grade signature language: layered champagne hardware, larger portrait
+-- housings, stream-readable captions and a unified action-stage foundation.
 
-BSUI.version = "0.20.0"
-BSUI.build = "SIGNATURE-OVERHAUL-20260818-A"
+BSUI.version = "0.21.0"
+BSUI.build = "TEEBUILDER-HERO-20260818-A"
 
-local GOLD = { 0.84, 0.71, 0.41 }
+local GOLD = { 0.86, 0.73, 0.43 }
+local GOLD_DIM = { 0.52, 0.42, 0.24 }
 local DARK = { 0.004, 0.009, 0.008 }
 local CREAM = { 0.94, 0.91, 0.83 }
 local skins = {}
 
-local function NewTexture(parent, layer, r, g, b, a)
+local function Texture(parent, layer, r, g, b, a)
   local t = parent:CreateTexture(nil, layer or "BACKGROUND")
   t:SetColorTexture(r, g, b, a)
   return t
 end
 
+local function Font(parent, size, color, text)
+  local fs = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  fs:SetFont("Fonts\\ARIALN.TTF", size or 11, "OUTLINE")
+  fs:SetTextColor(color[1], color[2], color[3], color[4] or 1)
+  fs:SetText(text or "")
+  return fs
+end
+
 local function HLine(parent, y, alpha, inset)
-  inset = inset or 2
-  local t = NewTexture(parent, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], alpha or 0.6)
-  t:SetPoint("LEFT", parent, "LEFT", inset, y)
-  t:SetPoint("RIGHT", parent, "RIGHT", -inset, y)
+  local t = Texture(parent, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], alpha or 0.60)
+  t:SetPoint("LEFT", parent, "LEFT", inset or 3, y)
+  t:SetPoint("RIGHT", parent, "RIGHT", -(inset or 3), y)
   t:SetHeight(1)
   return t
 end
 
-local function Label(shell, text, point, x)
-  local fs = shell:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  fs:SetFont("Fonts\\ARIALN.TTF", 10, "OUTLINE")
-  fs:SetText(text)
-  fs:SetTextColor(GOLD[1], GOLD[2], GOLD[3], 0.78)
-  fs:SetPoint(point, shell, point, x or 0, point == "TOP" and -5 or 5)
-  return fs
+local function VLine(parent, side, alpha, height, offset)
+  local t = Texture(parent, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], alpha or 0.70)
+  t:SetSize(2, height or 30)
+  if side == "LEFT" then t:SetPoint("LEFT", parent, "LEFT", offset or 0, 0)
+  else t:SetPoint("RIGHT", parent, "RIGHT", -(offset or 0), 0) end
+  return t
 end
 
-local function SkinUnit(frame, side, caption)
+local function CornerStud(parent, point, x, y)
+  local s = Texture(parent, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], 0.88)
+  s:SetSize(3, 3)
+  s:SetPoint(point, parent, point, x or 0, y or 0)
+  return s
+end
+
+local function SkinUnit(frame, side, caption, subcaption)
   if not frame or skins[frame] then return end
 
   local shell = CreateFrame("Frame", nil, UIParent)
   shell:SetFrameStrata("LOW")
   shell:SetFrameLevel(math.max(0, (frame:GetFrameLevel() or 1) - 1))
   shell:EnableMouse(false)
-  shell:SetPoint("TOPLEFT", frame, "TOPLEFT", -8, 8)
-  shell:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 8, -8)
+  shell:SetPoint("TOPLEFT", frame, "TOPLEFT", -12, 12)
+  shell:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 12, -12)
 
-  local shadow = NewTexture(shell, "BACKGROUND", 0, 0, 0, 0.46)
-  shadow:SetPoint("TOPLEFT", shell, "TOPLEFT", -5, 5)
-  shadow:SetPoint("BOTTOMRIGHT", shell, "BOTTOMRIGHT", 5, -6)
+  local shadow = Texture(shell, "BACKGROUND", 0, 0, 0, 0.54)
+  shadow:SetPoint("TOPLEFT", shell, "TOPLEFT", -7, 7)
+  shadow:SetPoint("BOTTOMRIGHT", shell, "BOTTOMRIGHT", 7, -8)
 
-  local base = NewTexture(shell, "BACKGROUND", DARK[1], DARK[2], DARK[3], 0.30)
-  base:SetAllPoints()
+  local plate = Texture(shell, "BACKGROUND", DARK[1], DARK[2], DARK[3], 0.36)
+  plate:SetAllPoints()
 
-  HLine(shell, -2, 0.92, 1)
-  HLine(shell, 2, 0.34, 1)
+  HLine(shell, -2, 0.96, 2)
+  HLine(shell, 2, 0.42, 2)
+  HLine(shell, -8, 0.16, 12)
+  HLine(shell, 8, 0.12, 12)
 
-  local cap = NewTexture(shell, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], 0.96)
-  cap:SetSize(3, 34)
-  if side == "left" then cap:SetPoint("LEFT", shell, "LEFT", 1, 0)
-  else cap:SetPoint("RIGHT", shell, "RIGHT", -1, 0) end
+  local sideName = side == "left" and "LEFT" or "RIGHT"
+  VLine(shell, sideName, 0.96, 46, 1)
+  VLine(shell, sideName, 0.34, 28, 7)
 
-  local inner = NewTexture(shell, "ARTWORK", GOLD[1], GOLD[2], GOLD[3], 0.22)
-  inner:SetSize(1, 24)
-  if side == "left" then inner:SetPoint("LEFT", shell, "LEFT", 7, 0)
-  else inner:SetPoint("RIGHT", shell, "RIGHT", -7, 0) end
+  CornerStud(shell, "TOPLEFT", 4, -4)
+  CornerStud(shell, "TOPRIGHT", -4, -4)
+  CornerStud(shell, "BOTTOMLEFT", 4, 4)
+  CornerStud(shell, "BOTTOMRIGHT", -4, 4)
 
-  Label(shell, caption, "TOP", 0)
+  local title = Font(shell, 12, { GOLD[1], GOLD[2], GOLD[3], 0.94 }, caption)
+  title:SetPoint("TOP", shell, "TOP", 0, -4)
+
+  local sub = Font(shell, 9, { CREAM[1], CREAM[2], CREAM[3], 0.48 }, subcaption)
+  sub:SetPoint("BOTTOM", shell, "BOTTOM", 0, 4)
+
   skins[frame] = shell
 end
 
@@ -77,32 +97,41 @@ local function SkinBar(frame, kind)
   shell:SetFrameStrata("LOW")
   shell:SetFrameLevel(math.max(0, (frame:GetFrameLevel() or 1) - 1))
   shell:EnableMouse(false)
-  shell:SetPoint("TOPLEFT", frame, "TOPLEFT", -10, 9)
-  shell:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 10, -9)
 
-  local shadow = NewTexture(shell, "BACKGROUND", 0, 0, 0, kind == "stance" and 0.22 or 0.38)
-  shadow:SetPoint("TOPLEFT", shell, "TOPLEFT", -4, 4)
-  shadow:SetPoint("BOTTOMRIGHT", shell, "BOTTOMRIGHT", 4, -5)
+  local xPad = kind == "stance" and 10 or 16
+  local yPad = kind == "stance" and 8 or 12
+  shell:SetPoint("TOPLEFT", frame, "TOPLEFT", -xPad, yPad)
+  shell:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", xPad, -yPad)
 
-  local base = NewTexture(shell, "BACKGROUND", DARK[1], DARK[2], DARK[3], kind == "stance" and 0.26 or 0.46)
+  local shadow = Texture(shell, "BACKGROUND", 0, 0, 0, kind == "stance" and 0.28 or 0.48)
+  shadow:SetPoint("TOPLEFT", shell, "TOPLEFT", -5, 5)
+  shadow:SetPoint("BOTTOMRIGHT", shell, "BOTTOMRIGHT", 5, -6)
+
+  local base = Texture(shell, "BACKGROUND", DARK[1], DARK[2], DARK[3], kind == "stance" and 0.34 or 0.56)
   base:SetAllPoints()
 
-  HLine(shell, -2, kind == "stance" and 0.42 or 0.70, 5)
-  HLine(shell, 2, kind == "stance" and 0.20 or 0.32, 5)
+  HLine(shell, -2, kind == "stance" and 0.48 or 0.86, 5)
+  HLine(shell, 2, kind == "stance" and 0.22 or 0.42, 5)
 
   if kind == "main" then
-    local leftCap = NewTexture(shell, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], 0.72)
-    leftCap:SetSize(2, 20); leftCap:SetPoint("LEFT", shell, "LEFT", 3, 0)
-    local rightCap = NewTexture(shell, "OVERLAY", GOLD[1], GOLD[2], GOLD[3], 0.72)
-    rightCap:SetSize(2, 20); rightCap:SetPoint("RIGHT", shell, "RIGHT", -3, 0)
+    VLine(shell, "LEFT", 0.82, 26, 3)
+    VLine(shell, "RIGHT", 0.82, 26, 3)
+    CornerStud(shell, "TOPLEFT", 5, -5)
+    CornerStud(shell, "TOPRIGHT", -5, -5)
+
+    local label = Font(shell, 9, { GOLD[1], GOLD[2], GOLD[3], 0.70 }, "TEE STAGE")
+    label:SetPoint("TOP", shell, "TOP", 0, -3)
+  else
+    local label = Font(shell, 8, { CREAM[1], CREAM[2], CREAM[3], 0.42 }, "FORM LINE")
+    label:SetPoint("TOP", shell, "TOP", 0, -2)
   end
 
   skins[frame] = shell
 end
 
 local function ApplyPremiumSkin()
-  SkinUnit(_G.ElvUF_Player, "left", "BIRDIETEE")
-  SkinUnit(_G.ElvUF_Target, "right", "RIVAL")
+  SkinUnit(_G.ElvUF_Player, "left", "BIRDIETEE", "PLAYER")
+  SkinUnit(_G.ElvUF_Target, "right", "RIVAL", "TARGET")
   SkinBar(_G.ElvUI_Bar1, "main")
   SkinBar(_G.ElvUI_StanceBar, "stance")
   SkinBar(_G.ElvUI_StanceBarMover, "stance")
@@ -113,8 +142,9 @@ events:RegisterEvent("PLAYER_ENTERING_WORLD")
 events:RegisterEvent("PLAYER_TARGET_CHANGED")
 events:SetScript("OnEvent", function()
   if C_Timer and C_Timer.After then
-    C_Timer.After(0.7, ApplyPremiumSkin)
-    C_Timer.After(1.7, ApplyPremiumSkin)
+    C_Timer.After(0.6, ApplyPremiumSkin)
+    C_Timer.After(1.4, ApplyPremiumSkin)
+    C_Timer.After(2.3, ApplyPremiumSkin)
   else
     ApplyPremiumSkin()
   end
