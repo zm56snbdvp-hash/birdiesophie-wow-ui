@@ -102,99 +102,92 @@ local function ActiveHots()
   return lines
 end
 
-local function CreateBar(owner, point, x, y, width)
-  local bar = CreateFrame("Frame", nil, owner)
-  bar:SetPoint(point, owner, point, x, y)
-  bar:SetSize(width, 6)
-  bar.width = width
-  local track = bar:CreateTexture(nil, "BACKGROUND")
+local function CreateRail(owner, point, x, y, width)
+  local rail = CreateFrame("Frame", nil, owner)
+  rail:SetPoint(point, owner, point, x, y)
+  rail:SetSize(width, 3)
+  local track = rail:CreateTexture(nil, "BACKGROUND")
   track:SetAllPoints()
-  track:SetColorTexture(Color("graphite", 0.96))
-  bar.fill = bar:CreateTexture(nil, "ARTWORK")
-  bar.fill:SetPoint("TOPLEFT", bar, "TOPLEFT", 1, -1)
-  bar.fill:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", 1, 1)
-  bar.fill:SetWidth(width - 2)
-  local rail = bar:CreateTexture(nil, "OVERLAY")
-  rail:SetPoint("TOPLEFT")
-  rail:SetPoint("TOPRIGHT")
-  rail:SetHeight(1)
-  rail:SetColorTexture(Color("champagne", 0.46))
-  return bar
+  track:SetColorTexture(Color("graphite", 0.88))
+  rail.fill = rail:CreateTexture(nil, "ARTWORK")
+  rail.fill:SetPoint("TOPLEFT")
+  rail.fill:SetPoint("BOTTOMLEFT")
+  rail.fill:SetWidth(width)
+  rail.width = width
+  return rail
 end
 
-local function SetBar(bar, percent, colorName)
-  bar.fill:SetWidth(math.max(1, (bar.width - 2) * math.max(0, math.min(100, percent)) / 100))
-  bar.fill:SetColorTexture(Color(colorName, 0.92))
+local function SetRail(rail, percent, colorName)
+  rail.fill:SetWidth(math.max(1, rail.width * math.max(0, math.min(100, percent)) / 100))
+  rail.fill:SetColorTexture(Color(colorName, 0.86))
 end
 
 local function Build()
   if frame then return end
 
   frame = CreateFrame("Frame", "BirdieSophieCombatCore", UIParent)
-  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 286)
-  frame:SetSize(560, 72)
+  frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 282)
+  frame:SetSize(520, 64)
   frame:SetFrameStrata("MEDIUM")
-  Art.ApplyPanel(frame, { cornerSize = 30, washAlpha = 0.22, edgeAlpha = 0.94, innerAlpha = 0.20 })
-  frame.title = Art.AddHeader(frame, "BIRDIE COMMAND DECK", { align = "CENTER", size = 10, height = 21 })
+  Art.ApplyPanel(frame, { cornerSize = 17, cornerAlpha = 0.24, washAlpha = 0.08, edgeAlpha = 0.66, shadowAlpha = 0.36 })
+
+  frame.title = Art.CreateText(frame, "OVERLAY", 9, "title", "OUTLINE")
+  frame.title:SetPoint("TOP", frame, "TOP", 0, -8)
+  frame.title:SetText("BIRDIE COMMAND")
+  frame.title:SetTextColor(Color("champagne", 0.68))
 
   frame.player = Art.CreateText(frame, "OVERLAY", 12, "title", "OUTLINE")
-  frame.player:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -31)
+  frame.player:SetPoint("LEFT", frame, "LEFT", 18, 2)
   frame.resource = Art.CreateText(frame, "OVERLAY", 10, "numbers", "OUTLINE")
-  frame.resource:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 13)
-  frame.resource:SetTextColor(Color("turquoise", 0.96))
+  frame.resource:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 9)
+  frame.resource:SetTextColor(Color("turquoise", 0.86))
 
   frame.target = Art.CreateText(frame, "OVERLAY", 12, "title", "OUTLINE")
-  frame.target:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -18, -31)
+  frame.target:SetPoint("RIGHT", frame, "RIGHT", -18, 2)
   frame.targetHealth = Art.CreateText(frame, "OVERLAY", 10, "numbers", "OUTLINE")
-  frame.targetHealth:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 13)
+  frame.targetHealth:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 9)
+  frame.targetHealth:SetTextColor(Color("cream", 0.70))
 
-  frame.playerBar = CreateBar(frame, "BOTTOMLEFT", 18, 6, 170)
-  frame.targetBar = CreateBar(frame, "BOTTOMRIGHT", -18, 6, 170)
+  frame.playerRail = CreateRail(frame, "BOTTOMLEFT", 18, 5, 145)
+  frame.targetRail = CreateRail(frame, "BOTTOMRIGHT", -18, 5, 145)
 
-  frame.coins = Art.CreateText(frame, "OVERLAY", 1, "numbers", "OUTLINE")
-  frame.coins:SetPoint("CENTER")
-  frame.coins:SetAlpha(0)
   frame.coinTextures = {}
   for index = 1, 5 do
-    local coin = Art.CreateCoin(frame, 21)
-    coin:SetPoint("CENTER", frame, "CENTER", (index - 3) * 23, -1)
+    local coin = Art.CreateCoin(frame, 18)
+    coin:SetPoint("CENTER", frame, "CENTER", (index - 3) * 21, -2)
     frame.coinTextures[index] = coin
   end
 
   frame.ready = Art.CreateText(frame, "OVERLAY", 9, "numbers", "OUTLINE")
-  frame.ready:SetPoint("TOP", frame, "TOP", 0, -48)
-  frame.ready:SetTextColor(Color("champagne"))
+  frame.ready:SetPoint("TOP", frame, "TOP", 0, -26)
+  frame.ready:SetTextColor(Color("champagne", 0.78))
 
   frame.gcd = CreateFrame("Cooldown", "BirdieSophieGlobalCooldown", frame, "CooldownFrameTemplate")
-  frame.gcd:SetPoint("CENTER", frame, "CENTER", 0, -1)
-  frame.gcd:SetSize(32, 32)
+  frame.gcd:SetPoint("CENTER", frame, "CENTER", 0, -2)
+  frame.gcd:SetSize(28, 28)
   if frame.gcd.SetDrawEdge then frame.gcd:SetDrawEdge(false) end
   if frame.gcd.SetDrawBling then frame.gcd:SetDrawBling(false) end
 
   stealthFrame = CreateFrame("Frame", "BirdieSophieStealthCaddie", UIParent)
   stealthFrame:SetPoint("BOTTOM", frame, "TOP", 0, 10)
-  stealthFrame:SetSize(500, 48)
+  stealthFrame:SetSize(420, 42)
   stealthFrame:SetFrameStrata("HIGH")
-  Art.ApplyPanel(stealthFrame, { edge = "moonlight", cornerSize = 24, wash = "moonlight", washAlpha = 0.16, edgeAlpha = 0.90 })
-  stealthFrame.title = Art.CreateText(stealthFrame, "OVERLAY", 10, "title", "OUTLINE")
-  stealthFrame.title:SetPoint("TOP", stealthFrame, "TOP", 0, -10)
-  stealthFrame.title:SetText("NIGHT ROUND  •  PROWL")
-  stealthFrame.title:SetTextColor(Color("moonlight"))
+  Art.ApplyPanel(stealthFrame, { edge = "moonlight", cornerSize = 15, cornerAlpha = 0.20, wash = "moonlight", washAlpha = 0.08, edgeAlpha = 0.58 })
   stealthFrame.text = Art.CreateText(stealthFrame, "OVERLAY", 11, "numbers", "OUTLINE")
-  stealthFrame.text:SetPoint("BOTTOM", stealthFrame, "BOTTOM", 0, 10)
-  stealthFrame.text:SetText("RAVAGE / SHRED   •   DASH   •   CHARGE   •   ESCAPE")
-  stealthFrame.text:SetTextColor(Color("champagne"))
+  stealthFrame.text:SetPoint("CENTER")
+  stealthFrame.text:SetText("NIGHT ROUND   •   RAVAGE / SHRED   •   DASH   •   CHARGE")
+  stealthFrame.text:SetTextColor(Color("moonlight", 0.94))
   stealthFrame:Hide()
 
   hotFrame = CreateFrame("Frame", "BirdieSophiePlayerHots", UIParent)
-  hotFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", -520, 500)
-  hotFrame:SetSize(280, 96)
+  hotFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", -455, 515)
+  hotFrame:SetSize(270, 88)
   hotFrame:SetFrameStrata("MEDIUM")
-  Art.ApplyPanel(hotFrame, { edge = "turquoise", cornerSize = 27, wash = "forest", washAlpha = 0.20, edgeAlpha = 0.86 })
-  hotFrame.title = Art.AddHeader(hotFrame, "BIRDIE'S ACTIVE HÔTS", { size = 11, height = 24, color = "turquoise" })
-  hotFrame.text = Art.CreateText(hotFrame, "OVERLAY", 12, "numbers", "OUTLINE")
-  hotFrame.text:SetPoint("TOPLEFT", hotFrame, "TOPLEFT", 18, -39)
-  hotFrame.text:SetPoint("BOTTOMRIGHT", hotFrame, "BOTTOMRIGHT", -18, 10)
+  Art.ApplyPanel(hotFrame, { edge = "turquoise", cornerSize = 16, cornerAlpha = 0.20, wash = "forest", washAlpha = 0.08, edgeAlpha = 0.54 })
+  hotFrame.title = Art.AddHeader(hotFrame, "ACTIVE HÔTS", { size = 10, height = 18, color = "turquoise", alpha = 0.24 })
+  hotFrame.text = Art.CreateText(hotFrame, "OVERLAY", 11, "numbers", "OUTLINE")
+  hotFrame.text:SetPoint("TOPLEFT", hotFrame, "TOPLEFT", 16, -34)
+  hotFrame.text:SetPoint("BOTTOMRIGHT", hotFrame, "BOTTOMRIGHT", -16, 10)
   hotFrame.text:SetJustifyH("LEFT")
   hotFrame.text:SetJustifyV("TOP")
   hotFrame:Hide()
@@ -206,19 +199,19 @@ local function Update(state)
   frame:SetShown(enabled)
   if not enabled then stealthFrame:Hide(); hotFrame:Hide(); return end
 
-  frame:SetAlpha(state.stealth and 0.78 or (state.inCombat and 1 or 0.90))
+  frame:SetAlpha(state.stealth and 0.74 or (state.inCombat and 0.98 or 0.80))
   local hp = Percent(state.health, state.healthMax)
   frame.player:SetText(string.format("BIRDIETEE  %d%%", hp))
-  frame.resource:SetText(string.format("MANA %d%%  •  %s %d/%d", Percent(state.mana, state.manaMax), state.powerToken or "POWER", state.power or 0, state.powerMax or 0))
+  frame.resource:SetText(string.format("MANA %d%%   •   %s", Percent(state.mana, state.manaMax), state.powerToken or "POWER"))
   frame.target:SetText(state.targetExists and "TARGET" or "NO TARGET")
   local targetHP = state.targetExists and Percent(state.targetHealth, state.targetHealthMax) or 0
-  frame.targetHealth:SetText(state.targetExists and string.format("HEALTH %d%%", targetHP) or "SELECT A RIVAL")
-  SetBar(frame.playerBar, hp, hp <= 30 and "danger" or "forest")
-  SetBar(frame.targetBar, targetHP, targetHP <= 30 and "danger" or "champagne")
+  frame.targetHealth:SetText(state.targetExists and string.format("%d%%", targetHP) or "")
+  SetRail(frame.playerRail, hp, hp <= 30 and "danger" or "forest")
+  SetRail(frame.targetRail, targetHP, targetHP <= 30 and "danger" or "champagne")
 
   for index = 1, 5 do
     local active = index <= (state.comboPoints or 0)
-    frame.coinTextures[index]:SetAlpha(active and 1 or 0.18)
+    frame.coinTextures[index]:SetAlpha(active and 0.96 or 0.12)
     if frame.coinTextures[index].SetDesaturated then frame.coinTextures[index]:SetDesaturated(not active) end
   end
 
@@ -228,9 +221,9 @@ local function Update(state)
   end
   if TrinketReady() then ready[#ready + 1] = "TRINKET" end
   local status = {}
-  if #active > 0 then status[#status + 1] = "ACTIVE " .. table.concat(active, " • ") end
+  if #active > 0 then status[#status + 1] = table.concat(active, " • ") end
   if #ready > 0 then status[#status + 1] = "READY " .. table.concat(ready, " • ") end
-  frame.ready:SetText(table.concat(status, "   "))
+  frame.ready:SetText(table.concat(status, "     "))
 
   local hots = ActiveHots()
   hotFrame:SetShown(#hots > 0)
