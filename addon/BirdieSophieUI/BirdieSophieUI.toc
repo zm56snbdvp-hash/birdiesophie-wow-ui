@@ -1,8 +1,8 @@
 ## Interface: 20505
 ## Title: BirdieSophieUI
-## Notes: Birdie & Breakfast interface companion for Birdiesophie
+## Notes: TeeBuilder Hero interface companion for Birdie & Breakfast
 ## Author: Birdie & Breakfast
-## Version: 0.20.0
+## Version: 0.21.0
 ## RequiredDeps: ElvUI
 ## OptionalDeps: WeakAuras, Details
 ## SavedVariables: BirdieSophieUIDB
@@ -21,3 +21,4 @@ Bag.lua
 Alerts.lua
 Vision.lua
 Premium.lua
+Hero.lua
