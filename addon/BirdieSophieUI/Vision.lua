@@ -1,41 +1,46 @@
 local addonName, BSUI = ...
 
--- v0.20 Signature Overhaul
--- Deliberate large visual jump: bigger premium unit frames, stronger mirrored
--- composition, larger main/form bars, more breathing room, fewer peripheral distractions.
+-- v0.21 TeeBuilder Hero
+-- First product-grade TeeBuilder composition: a large mirrored hero pair,
+-- one strong action stage, a deliberate druid form row and protected stream sightline.
 
-BSUI.version = "0.20.0"
-BSUI.build = "SIGNATURE-OVERHAUL-20260818-A"
+BSUI.version = "0.21.0"
+BSUI.build = "TEEBUILDER-HERO-20260818-A"
 
-local VISION_ID = "signature-overhaul-v1"
+local VISION_ID = "teebuilder-hero-v1"
 
 local moverPositions = {
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-310,285",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,310,285",
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-310,375",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,310,375",
+  -- Hero pair. Large enough for stream readability, far enough apart to frame the character.
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-360,300",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,360,300",
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-360,404",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,360,404",
 
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,46",
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,46",
-  ShiftAB = "BOTTOM,ElvUIParent,BOTTOM,0,104",
+  -- One primary ability stage plus class-form row.
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,48",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,48",
+  ShiftAB = "BOTTOM,ElvUIParent,BOTTOM,0,112",
 
-  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,30,-165",
-  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,30,-165",
-  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-180,-170",
+  -- Peripheral information belongs at the perimeter, never in the hero lane.
+  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,34,-170",
+  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,34,-170",
+  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-195,-182",
 }
 
 local settings = {
   ["general.fontSize"] = 12,
-  ["unitframe.fontSize"] = 12,
+  ["unitframe.fontSize"] = 13,
 
-  ["unitframe.units.player.width"] = 360,
-  ["unitframe.units.player.height"] = 72,
+  -- Player: larger, quiet, readable at stream scale.
+  ["unitframe.units.player.width"] = 420,
+  ["unitframe.units.player.height"] = 84,
   ["unitframe.units.player.orientation"] = "LEFT",
   ["unitframe.units.player.portrait.enable"] = true,
   ["unitframe.units.player.portrait.style"] = "3D",
   ["unitframe.units.player.portrait.overlay"] = false,
-  ["unitframe.units.player.portrait.width"] = 62,
-  ["unitframe.units.player.power.height"] = 9,
+  ["unitframe.units.player.portrait.width"] = 72,
+  ["unitframe.units.player.power.enable"] = true,
+  ["unitframe.units.player.power.height"] = 10,
   ["unitframe.units.player.health.text_format"] = "[health:percent]",
   ["unitframe.units.player.power.text_format"] = "",
   ["unitframe.units.player.name.text_format"] = "[name:medium]",
@@ -43,14 +48,16 @@ local settings = {
   ["unitframe.units.player.debuffs.enable"] = false,
   ["unitframe.units.player.aurabar.enable"] = false,
 
-  ["unitframe.units.target.width"] = 360,
-  ["unitframe.units.target.height"] = 72,
+  -- Target mirrors player exactly; target clutter is intentionally removed.
+  ["unitframe.units.target.width"] = 420,
+  ["unitframe.units.target.height"] = 84,
   ["unitframe.units.target.orientation"] = "RIGHT",
   ["unitframe.units.target.portrait.enable"] = true,
   ["unitframe.units.target.portrait.style"] = "3D",
   ["unitframe.units.target.portrait.overlay"] = false,
-  ["unitframe.units.target.portrait.width"] = 62,
-  ["unitframe.units.target.power.height"] = 9,
+  ["unitframe.units.target.portrait.width"] = 72,
+  ["unitframe.units.target.power.enable"] = true,
+  ["unitframe.units.target.power.height"] = 10,
   ["unitframe.units.target.health.text_format"] = "[health:percent]",
   ["unitframe.units.target.power.text_format"] = "",
   ["unitframe.units.target.name.text_format"] = "[name:medium]",
@@ -62,32 +69,36 @@ local settings = {
   ["unitframe.units.focus.enable"] = false,
   ["unitframe.units.pet.enable"] = false,
 
-  ["unitframe.colors.health"] = { r = 0.045, g = 0.145, b = 0.102 },
-  ["unitframe.colors.health_backdrop"] = { r = 0.005, g = 0.012, b = 0.010 },
-  ["unitframe.colors.power.MANA"] = { r = 0.07, g = 0.22, b = 0.29 },
-  ["unitframe.colors.power.ENERGY"] = { r = 0.63, g = 0.48, b = 0.16 },
-  ["unitframe.colors.power.RAGE"] = { r = 0.50, g = 0.15, b = 0.11 },
-  ["general.backdropcolor"] = { r = 0.005, g = 0.011, b = 0.009 },
-  ["general.bordercolor"] = { r = 0.76, g = 0.62, b = 0.35 },
-  ["general.valuecolor"] = { r = 0.84, g = 0.71, b = 0.41 },
+  -- TeeBuilder master palette.
+  ["unitframe.colors.health"] = { r = 0.038, g = 0.128, b = 0.091 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.004, g = 0.010, b = 0.008 },
+  ["unitframe.colors.power.MANA"] = { r = 0.060, g = 0.205, b = 0.275 },
+  ["unitframe.colors.power.ENERGY"] = { r = 0.66, g = 0.51, b = 0.17 },
+  ["unitframe.colors.power.RAGE"] = { r = 0.52, g = 0.15, b = 0.10 },
+  ["general.backdropcolor"] = { r = 0.004, g = 0.009, b = 0.008 },
+  ["general.bordercolor"] = { r = 0.80, g = 0.66, b = 0.37 },
+  ["general.valuecolor"] = { r = 0.86, g = 0.73, b = 0.43 },
 
+  -- Hero action stage: large enough to read, still only one permanent row.
   ["actionbar.fontSize"] = 11,
   ["actionbar.bar1.enabled"] = true,
-  ["actionbar.bar1.buttonsize"] = 42,
-  ["actionbar.bar1.buttonspacing"] = 4,
+  ["actionbar.bar1.buttonsize"] = 46,
+  ["actionbar.bar1.buttonspacing"] = 5,
   ["actionbar.bar1.buttons"] = 10,
+  ["actionbar.bar1.backdrop"] = false,
   ["actionbar.bar2.enabled"] = false,
   ["actionbar.bar3.enabled"] = false,
 
   ["actionbar.stanceBar.enabled"] = true,
-  ["actionbar.stanceBar.buttonsize"] = 34,
-  ["actionbar.stanceBar.buttonspacing"] = 4,
+  ["actionbar.stanceBar.buttonsize"] = 36,
+  ["actionbar.stanceBar.buttonspacing"] = 5,
   ["actionbar.stanceBar.buttonsPerRow"] = 10,
   ["actionbar.stanceBar.backdrop"] = false,
   ["actionbar.stanceBar.mouseover"] = false,
 
-  ["chat.panelWidth"] = 300,
-  ["chat.panelHeight"] = 120,
+  -- Peripheral stream tools stay useful but deliberately secondary.
+  ["chat.panelWidth"] = 290,
+  ["chat.panelHeight"] = 112,
   ["chat.fontSize"] = 10,
   ["cooldown.fontSize"] = 14,
 }
@@ -139,7 +150,7 @@ end
 local function CenterStanceBar()
   for _, frameName in ipairs({ "ElvUI_StanceBar", "ElvUI_StanceBarHolder", "StanceBar" }) do
     local stance = _G[frameName]
-    if stance then Move(stance, "BOTTOM", "BOTTOM", 0, 104); break end
+    if stance then Move(stance, "BOTTOM", "BOTTOM", 0, 112); return stance end
   end
 end
 
@@ -164,13 +175,13 @@ local function QuietRuntime()
     "ElvUF_TargetTargetTarget", "ElvUF_Focus", "ElvUF_Pet", "ElvUI_Bar2", "ElvUI_Bar3",
   }) do HideFrame(frameName) end
 
-  Move(_G.ElvUI_Bar1, "BOTTOM", "BOTTOM", 0, 46)
+  Move(_G.ElvUI_Bar1, "BOTTOM", "BOTTOM", 0, 48)
   CenterStanceBar()
-  Move(_G.ElvUF_PlayerCastbar, "BOTTOM", "BOTTOM", -310, 375, 300, 22)
-  Move(_G.ElvUF_TargetCastbar, "BOTTOM", "BOTTOM", 310, 375, 300, 22)
+  Move(_G.ElvUF_PlayerCastbar, "BOTTOM", "BOTTOM", -360, 404, 330, 24)
+  Move(_G.ElvUF_TargetCastbar, "BOTTOM", "BOTTOM", 360, 404, 330, 24)
 
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 12, 14, 300, 120)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -12, 14, 290, 118)
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 12, 12, 290, 112)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -12, 12, 280, 110)
 end
 
 local function ApplyVision()
@@ -181,9 +192,16 @@ local function ApplyVision()
     ApplyMovers(engine)
     if type(engine.UpdateAll) == "function" then pcall(engine.UpdateAll, engine, true) end
   end
+
   QuietRuntime()
   if BSUI.ApplyPremiumSkin then pcall(BSUI.ApplyPremiumSkin) end
-  BirdieSophieUIDB.vision = { id = VISION_ID, build = BSUI.build, appliedAt = time() }
+  if BSUI.ApplyHeroLayer then pcall(BSUI.ApplyHeroLayer) end
+
+  BirdieSophieUIDB.vision = {
+    id = VISION_ID,
+    build = BSUI.build,
+    appliedAt = time(),
+  }
 end
 
 BSUI.ApplyVisionReset = ApplyVision
@@ -194,8 +212,9 @@ events:RegisterEvent("PLAYER_REGEN_ENABLED")
 events:SetScript("OnEvent", function(_, event)
   if event == "PLAYER_REGEN_ENABLED" and BirdieSophieUIDB.vision and BirdieSophieUIDB.vision.id == VISION_ID then return end
   if C_Timer and C_Timer.After then
-    C_Timer.After(0.6, ApplyVision)
-    C_Timer.After(1.6, ApplyVision)
+    C_Timer.After(0.5, ApplyVision)
+    C_Timer.After(1.4, ApplyVision)
+    C_Timer.After(2.4, ApplyVision)
   else
     ApplyVision()
   end
