@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.30.0"
-BSUI.build = "TEEBUILDER-HERO-SYSTEM-20260818-A"
+BSUI.version = "0.41.0"
+BSUI.build = "QUIET-SYSTEM-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -112,7 +112,7 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
   if command == "alerttest" and BSUI.TestAlert then BSUI.TestAlert(); return end
   if command == "modules" and BSUI.ShowModules then BSUI.ShowModules(); return end
   if command == "module" and BSUI.ModuleCommand then BSUI.ModuleCommand(arguments); return end
-  if command == "hero" and BSUI.ApplyHeroHUD then BSUI.ApplyHeroHUD(); Print("Hero HUD refreshed."); return end
+  if command == "hero" and BSUI.ApplyQuietLuxury then BSUI.ApplyQuietLuxury(); if BSUI.ApplyQuietChrome then BSUI.ApplyQuietChrome() end; Print("Quiet Luxury refreshed."); return end
   Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest, hero")
 end
 
@@ -125,6 +125,6 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
   elseif event == "PLAYER_LOGIN" then
     if BSUI.InitializeModules then BSUI.InitializeModules() end
     if BSUI.InitializeLayout then BSUI.InitializeLayout() end
-    Print("HERO SYSTEM ONLINE → /bsui status")
+    Print("QUIET LUXURY ONLINE → /bsui status")
   end
 end)
