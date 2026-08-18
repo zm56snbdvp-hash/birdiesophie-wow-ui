@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.21.0"
-BSUI.build = "TEEBUILDER-HERO-20260818-A"
+BSUI.version = "0.30.0"
+BSUI.build = "TEEBUILDER-HERO-SYSTEM-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -29,7 +29,7 @@ frame:RegisterEvent("PLAYER_LOGIN")
 local function Print(message)
   local gold = "|cFFC7A763"
   local cream = "|cFFF0EAD6"
-  DEFAULT_CHAT_FRAME:AddMessage(gold .. "BirdieSophie|r " .. cream .. message .. "|r")
+  DEFAULT_CHAT_FRAME:AddMessage(gold .. "TeeBuilder|r " .. cream .. message .. "|r")
 end
 
 BSUI.Print = Print
@@ -73,7 +73,12 @@ local function RefreshDisplayState()
   BSUI.display.effectiveScale = effectiveScale
   BSUI.display.source = source
   BSUI.display.provisional = physicalWidth == nil or physicalHeight == nil
-  BirdieSophieUIDB.lastDisplay = { width = BSUI.display.width, height = BSUI.display.height, uiWidth = uiWidth, uiHeight = uiHeight, effectiveScale = effectiveScale, source = source, provisional = BSUI.display.provisional }
+  BirdieSophieUIDB.lastDisplay = {
+    width = BSUI.display.width, height = BSUI.display.height,
+    uiWidth = uiWidth, uiHeight = uiHeight,
+    effectiveScale = effectiveScale, source = source,
+    provisional = BSUI.display.provisional,
+  }
   return BSUI.display
 end
 
@@ -107,7 +112,8 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
   if command == "alerttest" and BSUI.TestAlert then BSUI.TestAlert(); return end
   if command == "modules" and BSUI.ShowModules then BSUI.ShowModules(); return end
   if command == "module" and BSUI.ModuleCommand then BSUI.ModuleCommand(arguments); return end
-  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest")
+  if command == "hero" and BSUI.ApplyHeroHUD then BSUI.ApplyHeroHUD(); Print("Hero HUD refreshed."); return end
+  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest, hero")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
@@ -119,6 +125,6 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
   elseif event == "PLAYER_LOGIN" then
     if BSUI.InitializeModules then BSUI.InitializeModules() end
     if BSUI.InitializeLayout then BSUI.InitializeLayout() end
-    Print("TEEBUILDER HERO → /bsui install")
+    Print("HERO SYSTEM ONLINE → /bsui status")
   end
 end)
