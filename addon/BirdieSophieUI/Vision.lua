@@ -1,32 +1,29 @@
 local addonName, BSUI = ...
 
--- v0.14 Pair Polish
--- Keep the successful paired composition, remove target-frame clutter and
--- refine the permanent baseline into a calmer premium two-frame system.
+-- v0.15 Frame Polish
+-- Lock the successful split composition into a cleaner premium pair: slightly
+-- wider mirrored frames, no aura bars, no pet/focus clutter, two calm action rows.
 
-BSUI.version = "0.14.0"
-BSUI.build = "PAIR-POLISH-20260818-A"
+BSUI.version = "0.15.0"
+BSUI.build = "FRAME-POLISH-20260818-A"
 
-local VISION_ID = "pair-polish-v1"
+local VISION_ID = "frame-polish-v1"
 
 local moverPositions = {
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-195,228",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,195,228",
-  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-405,224",
-  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,405,224",
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-230,248",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,230,248",
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-230,318",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,230,318",
 
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-195,296",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,195,296",
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,44",
+  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,82",
+  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,120",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,44",
+  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,82",
+  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,120",
 
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,48",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,86",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,124",
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,48",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,86",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,124",
-
-  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-150",
-  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-150",
+  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,26,-145",
+  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,26,-145",
   ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-170,-155",
 }
 
@@ -34,49 +31,47 @@ local settings = {
   ["general.fontSize"] = 11,
   ["unitframe.fontSize"] = 11,
 
-  ["unitframe.units.player.width"] = 250,
-  ["unitframe.units.player.height"] = 52,
+  ["unitframe.units.player.width"] = 280,
+  ["unitframe.units.player.height"] = 54,
   ["unitframe.units.player.orientation"] = "LEFT",
   ["unitframe.units.player.portrait.enable"] = true,
   ["unitframe.units.player.portrait.style"] = "3D",
   ["unitframe.units.player.portrait.overlay"] = false,
-  ["unitframe.units.player.portrait.width"] = 44,
+  ["unitframe.units.player.portrait.width"] = 46,
   ["unitframe.units.player.power.height"] = 7,
   ["unitframe.units.player.health.text_format"] = "[health:current]",
   ["unitframe.units.player.power.text_format"] = "[power:current]",
   ["unitframe.units.player.name.text_format"] = "[name:medium]",
   ["unitframe.units.player.buffs.enable"] = false,
   ["unitframe.units.player.debuffs.enable"] = false,
+  ["unitframe.units.player.aurabar.enable"] = false,
 
-  ["unitframe.units.target.width"] = 250,
-  ["unitframe.units.target.height"] = 52,
+  ["unitframe.units.target.width"] = 280,
+  ["unitframe.units.target.height"] = 54,
   ["unitframe.units.target.orientation"] = "RIGHT",
   ["unitframe.units.target.portrait.enable"] = true,
   ["unitframe.units.target.portrait.style"] = "3D",
   ["unitframe.units.target.portrait.overlay"] = false,
-  ["unitframe.units.target.portrait.width"] = 44,
+  ["unitframe.units.target.portrait.width"] = 46,
   ["unitframe.units.target.power.height"] = 7,
   ["unitframe.units.target.health.text_format"] = "[health:current]",
   ["unitframe.units.target.power.text_format"] = "[power:current]",
   ["unitframe.units.target.name.text_format"] = "[name:medium]",
   ["unitframe.units.target.buffs.enable"] = false,
   ["unitframe.units.target.debuffs.enable"] = false,
+  ["unitframe.units.target.aurabar.enable"] = false,
 
-  -- Target-of-target is visually noisy in the split composition. Keep it off.
   ["unitframe.units.targettarget.enable"] = false,
+  ["unitframe.units.focus.enable"] = false,
+  ["unitframe.units.pet.enable"] = false,
 
-  ["unitframe.units.focus.width"] = 118,
-  ["unitframe.units.focus.height"] = 22,
-  ["unitframe.units.pet.width"] = 92,
-  ["unitframe.units.pet.height"] = 20,
-
-  ["unitframe.colors.health"] = { r = 0.070, g = 0.205, b = 0.148 },
-  ["unitframe.colors.health_backdrop"] = { r = 0.010, g = 0.022, b = 0.019 },
-  ["unitframe.colors.power.MANA"] = { r = 0.115, g = 0.335, b = 0.405 },
-  ["unitframe.colors.power.ENERGY"] = { r = 0.70, g = 0.55, b = 0.20 },
-  ["unitframe.colors.power.RAGE"] = { r = 0.58, g = 0.20, b = 0.15 },
-  ["general.backdropcolor"] = { r = 0.010, g = 0.019, b = 0.017 },
-  ["general.bordercolor"] = { r = 0.63, g = 0.52, b = 0.31 },
+  ["unitframe.colors.health"] = { r = 0.062, g = 0.185, b = 0.135 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.008, g = 0.018, b = 0.016 },
+  ["unitframe.colors.power.MANA"] = { r = 0.10, g = 0.29, b = 0.36 },
+  ["unitframe.colors.power.ENERGY"] = { r = 0.66, g = 0.51, b = 0.18 },
+  ["unitframe.colors.power.RAGE"] = { r = 0.54, g = 0.18, b = 0.13 },
+  ["general.backdropcolor"] = { r = 0.008, g = 0.016, b = 0.014 },
+  ["general.bordercolor"] = { r = 0.67, g = 0.55, b = 0.32 },
   ["general.valuecolor"] = { r = 0.78, g = 0.65, b = 0.39 },
 
   ["actionbar.fontSize"] = 10,
@@ -88,8 +83,8 @@ local settings = {
   ["actionbar.bar2.buttons"] = 10,
   ["actionbar.bar3.enabled"] = false,
 
-  ["chat.panelWidth"] = 330,
-  ["chat.panelHeight"] = 138,
+  ["chat.panelWidth"] = 320,
+  ["chat.panelHeight"] = 132,
   ["chat.fontSize"] = 10,
   ["cooldown.fontSize"] = 12,
 }
@@ -138,6 +133,11 @@ local function Move(frame, point, relativePoint, x, y, width, height)
   if width and height and type(frame.SetSize) == "function" then frame:SetSize(width, height) end
 end
 
+local function HideFrame(name)
+  local frame = _G[name]
+  if frame and type(frame.Hide) == "function" then frame:Hide() end
+end
+
 local function QuietRuntime()
   BirdieSophieUIDB.themeEnabled = false
   if BSUI.RefreshClubhouseTheme then pcall(BSUI.RefreshClubhouseTheme) end
@@ -153,27 +153,16 @@ local function QuietRuntime()
   if BSUI.RefreshModules then pcall(BSUI.RefreshModules) end
 
   for _, frameName in ipairs({
-    "BirdieSophieClubhouseShell",
-    "BirdieSophieCombatCore",
-    "BirdieSophieMouseoverCaddie",
-    "BirdieSophieTargetDebuffs",
-    "BirdieSophiePlayerHots",
-    "BirdieSophieLevelCaddie",
-    "BirdieSophieUtilityBag",
-    "BirdieSophieCaddieWarning",
+    "BirdieSophieClubhouseShell", "BirdieSophieCombatCore", "BirdieSophieMouseoverCaddie",
+    "BirdieSophieTargetDebuffs", "BirdieSophiePlayerHots", "BirdieSophieLevelCaddie",
+    "BirdieSophieUtilityBag", "BirdieSophieCaddieWarning", "ElvUF_TargetTarget",
+    "ElvUF_TargetTargetTarget", "ElvUF_Focus", "ElvUF_Pet",
   }) do
-    local frame = _G[frameName]
-    if frame then frame:Hide() end
+    HideFrame(frameName)
   end
 
-  -- Belt-and-suspenders cleanup for frames that may predate the saved setting.
-  for _, frameName in ipairs({ "ElvUF_TargetTarget", "ElvUF_TargetTargetTarget" }) do
-    local frame = _G[frameName]
-    if frame and type(frame.Hide) == "function" then frame:Hide() end
-  end
-
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 16, 18, 330, 138)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -16, 18, 320, 136)
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 14, 16, 320, 132)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -14, 16, 310, 130)
 end
 
 local function ApplyVision()
@@ -184,7 +173,6 @@ local function ApplyVision()
     ApplyMovers(engine)
     if type(engine.UpdateAll) == "function" then pcall(engine.UpdateAll, engine, true) end
   end
-
   QuietRuntime()
   BirdieSophieUIDB.vision = { id = VISION_ID, build = BSUI.build, appliedAt = time() }
 end
