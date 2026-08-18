@@ -4,6 +4,9 @@ local addonName, BSUI = ...
 -- Purely visual layer: fine champagne rails, restrained shadows and a unified
 -- action foundation around the already-stable v0.17 composition.
 
+BSUI.version = "0.18.0"
+BSUI.build = "PREMIUM-SKIN-20260818-A"
+
 local GOLD = { 0.78, 0.65, 0.39 }
 local DARK = { 0.006, 0.012, 0.010 }
 local skins = {}
@@ -39,7 +42,6 @@ local function SkinUnit(frame, side)
   local base = NewTexture(shell, "BACKGROUND", DARK[1], DARK[2], DARK[3], 0.88)
   base:SetAllPoints()
 
-  -- Fine rails only: no heavy box frame.
   AddRail(shell, "TOPLEFT", "TOPLEFT", 1, -1, "TOPRIGHT", "TOPRIGHT", -1, -1, 1, 0.78)
   AddRail(shell, "BOTTOMLEFT", "BOTTOMLEFT", 1, 1, "BOTTOMRIGHT", "BOTTOMRIGHT", -1, 1, 1, 0.42)
 
@@ -80,7 +82,6 @@ end
 local function ApplyPremiumSkin()
   SkinUnit(_G.ElvUF_Player, "left")
   SkinUnit(_G.ElvUF_Target, "right")
-
   SkinBar(_G.ElvUI_Bar1, "main")
   SkinBar(_G.ElvUI_StanceBar, "stance")
   SkinBar(_G.ElvUI_StanceBarMover, "stance")
