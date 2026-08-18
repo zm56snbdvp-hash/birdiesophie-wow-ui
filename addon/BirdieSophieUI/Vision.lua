@@ -1,41 +1,32 @@
 local addonName, BSUI = ...
 
--- v0.11 Composition Pass
--- Preserve the calm Tee Line baseline, but make the combat core read as one
--- intentional composition: mirrored player/target, two centered action rows,
--- and a clear character sightline between them.
+-- v0.12 Split Frame Pass
+-- Permanent combat grammar: mirrored Player/Target + two action rows.
+-- No permanent Command Deck. Contextual cards stay transient.
 
-BSUI.version = "0.11.0"
-BSUI.build = "COMPOSITION-20260818-A"
+BSUI.version = "0.12.0"
+BSUI.build = "SPLIT-FRAME-20260818-A"
 
-local VISION_ID = "composition-v1"
+local VISION_ID = "split-frame-v1"
 
 local moverPositions = {
-  -- Mirrored primary frames: close enough to read as a pair, far enough to keep
-  -- Birdietee and the central cast lane unobstructed.
-  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-300,265",
-  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,300,265",
+  ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-300,255",
+  ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,300,255",
+  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-500,250",
+  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,500,250",
+  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-300,330",
+  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,300,330",
 
-  -- Supporting frames stay subordinate and outside the primary pair.
-  ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-485,265",
-  ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,485,265",
+  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,42",
+  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,84",
+  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,126",
+  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,42",
+  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,84",
+  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,126",
 
-  -- Cast bars occupy the center lane above the unit-frame pair.
-  ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-300,344",
-  ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,372",
-
-  -- Two permanent action rows. Bar 3 remains disabled.
-  ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,52",
-  ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,96",
-  ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,140",
-  ElvUI_Bar1_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,52",
-  ElvUI_Bar2_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,96",
-  ElvUI_Bar3_Mover = "BOTTOM,ElvUIParent,BOTTOM,0,140",
-
-  -- Group information stays peripheral.
-  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,34,-165",
-  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,34,-165",
-  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-245,-165",
+  ElvUF_PartyMover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-150",
+  ElvUF_Raid1Mover = "TOPLEFT,ElvUIParent,TOPLEFT,28,-150",
+  ObjectiveFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-170,-155",
 }
 
 local settings = {
@@ -43,11 +34,11 @@ local settings = {
   ["unitframe.fontSize"] = 11,
 
   ["unitframe.units.player.width"] = 300,
-  ["unitframe.units.player.height"] = 64,
+  ["unitframe.units.player.height"] = 58,
   ["unitframe.units.player.portrait.enable"] = true,
   ["unitframe.units.player.portrait.style"] = "3D",
   ["unitframe.units.player.portrait.overlay"] = false,
-  ["unitframe.units.player.portrait.width"] = 54,
+  ["unitframe.units.player.portrait.width"] = 52,
   ["unitframe.units.player.power.height"] = 10,
   ["unitframe.units.player.health.text_format"] = "[health:current]",
   ["unitframe.units.player.power.text_format"] = "[power:current]",
@@ -55,39 +46,39 @@ local settings = {
   ["unitframe.units.player.buffs.enable"] = false,
 
   ["unitframe.units.target.width"] = 300,
-  ["unitframe.units.target.height"] = 64,
+  ["unitframe.units.target.height"] = 58,
   ["unitframe.units.target.portrait.enable"] = true,
   ["unitframe.units.target.portrait.style"] = "3D",
   ["unitframe.units.target.portrait.overlay"] = false,
-  ["unitframe.units.target.portrait.width"] = 54,
+  ["unitframe.units.target.portrait.width"] = 52,
   ["unitframe.units.target.power.height"] = 10,
   ["unitframe.units.target.health.text_format"] = "[health:current]",
   ["unitframe.units.target.power.text_format"] = "[power:current]",
   ["unitframe.units.target.name.text_format"] = "[name:medium]",
   ["unitframe.units.target.debuffs.enable"] = false,
 
-  ["unitframe.units.focus.width"] = 165,
+  ["unitframe.units.focus.width"] = 170,
   ["unitframe.units.focus.height"] = 34,
-  ["unitframe.units.pet.width"] = 112,
+  ["unitframe.units.pet.width"] = 120,
   ["unitframe.units.pet.height"] = 24,
 
-  ["unitframe.colors.health"] = { r = 0.085, g = 0.27, b = 0.19 },
-  ["unitframe.colors.health_backdrop"] = { r = 0.014, g = 0.032, b = 0.026 },
+  ["unitframe.colors.health"] = { r = 0.085, g = 0.245, b = 0.175 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.014, g = 0.028, b = 0.023 },
   ["general.backdropcolor"] = { r = 0.014, g = 0.024, b = 0.021 },
-  ["general.bordercolor"] = { r = 0.55, g = 0.45, b = 0.27 },
+  ["general.bordercolor"] = { r = 0.58, g = 0.47, b = 0.27 },
   ["general.valuecolor"] = { r = 0.78, g = 0.65, b = 0.39 },
 
   ["actionbar.fontSize"] = 10,
   ["actionbar.bar1.buttonsize"] = 36,
   ["actionbar.bar1.buttonspacing"] = 3,
   ["actionbar.bar1.buttons"] = 10,
-  ["actionbar.bar2.buttonsize"] = 34,
+  ["actionbar.bar2.buttonsize"] = 32,
   ["actionbar.bar2.buttonspacing"] = 3,
   ["actionbar.bar2.buttons"] = 10,
   ["actionbar.bar3.enabled"] = false,
 
   ["chat.panelWidth"] = 360,
-  ["chat.panelHeight"] = 150,
+  ["chat.panelHeight"] = 145,
   ["chat.fontSize"] = 10,
   ["cooldown.fontSize"] = 12,
 }
@@ -124,9 +115,7 @@ local function ApplyMovers(engine)
       or engine.db.movers[name] ~= nil
     if available then
       engine.db.movers[name] = position
-      if type(engine.SetMoverPoints) == "function" then
-        pcall(engine.SetMoverPoints, engine, name)
-      end
+      if type(engine.SetMoverPoints) == "function" then pcall(engine.SetMoverPoints, engine, name) end
     end
   end
 end
@@ -154,15 +143,15 @@ local function QuietRuntime()
 
   local shell = _G.BirdieSophieClubhouseShell
   if shell then shell:Hide() end
+  local command = _G.BirdieSophieCombatCore
+  if command then command:Hide() end
   local level = _G.BirdieSophieLevelCaddie
   if level then level:Hide() end
   local bag = _G.BirdieSophieUtilityBag
   if bag then bag:Hide() end
 
-  -- Keep analysis on the extreme sides. They should never compete with the
-  -- player/target pair or action rows.
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 18, 20, 360, 150)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -18, 20, 360, 150)
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 18, 20, 360, 145)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -18, 20, 360, 145)
 end
 
 local function ApplyVision()
@@ -175,12 +164,7 @@ local function ApplyVision()
   end
 
   QuietRuntime()
-
-  BirdieSophieUIDB.vision = {
-    id = VISION_ID,
-    build = BSUI.build,
-    appliedAt = time(),
-  }
+  BirdieSophieUIDB.vision = { id = VISION_ID, build = BSUI.build, appliedAt = time() }
 end
 
 BSUI.ApplyVisionReset = ApplyVision
@@ -189,9 +173,7 @@ local events = CreateFrame("Frame")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
 events:RegisterEvent("PLAYER_REGEN_ENABLED")
 events:SetScript("OnEvent", function(_, event)
-  if event == "PLAYER_REGEN_ENABLED" and BirdieSophieUIDB.vision and BirdieSophieUIDB.vision.id == VISION_ID then
-    return
-  end
+  if event == "PLAYER_REGEN_ENABLED" and BirdieSophieUIDB.vision and BirdieSophieUIDB.vision.id == VISION_ID then return end
   if C_Timer and C_Timer.After then
     C_Timer.After(0.8, ApplyVision)
     C_Timer.After(2.0, ApplyVision)
