@@ -1,13 +1,13 @@
 local addonName, BSUI = ...
 
--- v0.15 Frame Polish
--- Lock the successful split composition into a cleaner premium pair: slightly
--- wider mirrored frames, no aura bars, no pet/focus clutter, two calm action rows.
+-- v0.16 Premium Baseline
+-- Keep the clean paired unit frames, force both action rows into the true center
+-- and remove the last stray ElvUI bars that visually compete with the target.
 
-BSUI.version = "0.15.0"
-BSUI.build = "FRAME-POLISH-20260818-A"
+BSUI.version = "0.16.0"
+BSUI.build = "PREMIUM-BASELINE-20260818-A"
 
-local VISION_ID = "frame-polish-v1"
+local VISION_ID = "premium-baseline-v1"
 
 local moverPositions = {
   ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-230,248",
@@ -39,8 +39,8 @@ local settings = {
   ["unitframe.units.player.portrait.overlay"] = false,
   ["unitframe.units.player.portrait.width"] = 46,
   ["unitframe.units.player.power.height"] = 7,
-  ["unitframe.units.player.health.text_format"] = "[health:current]",
-  ["unitframe.units.player.power.text_format"] = "[power:current]",
+  ["unitframe.units.player.health.text_format"] = "[health:percent]",
+  ["unitframe.units.player.power.text_format"] = "",
   ["unitframe.units.player.name.text_format"] = "[name:medium]",
   ["unitframe.units.player.buffs.enable"] = false,
   ["unitframe.units.player.debuffs.enable"] = false,
@@ -54,8 +54,8 @@ local settings = {
   ["unitframe.units.target.portrait.overlay"] = false,
   ["unitframe.units.target.portrait.width"] = 46,
   ["unitframe.units.target.power.height"] = 7,
-  ["unitframe.units.target.health.text_format"] = "[health:current]",
-  ["unitframe.units.target.power.text_format"] = "[power:current]",
+  ["unitframe.units.target.health.text_format"] = "[health:percent]",
+  ["unitframe.units.target.power.text_format"] = "",
   ["unitframe.units.target.name.text_format"] = "[name:medium]",
   ["unitframe.units.target.buffs.enable"] = false,
   ["unitframe.units.target.debuffs.enable"] = false,
@@ -65,14 +65,14 @@ local settings = {
   ["unitframe.units.focus.enable"] = false,
   ["unitframe.units.pet.enable"] = false,
 
-  ["unitframe.colors.health"] = { r = 0.062, g = 0.185, b = 0.135 },
-  ["unitframe.colors.health_backdrop"] = { r = 0.008, g = 0.018, b = 0.016 },
-  ["unitframe.colors.power.MANA"] = { r = 0.10, g = 0.29, b = 0.36 },
-  ["unitframe.colors.power.ENERGY"] = { r = 0.66, g = 0.51, b = 0.18 },
-  ["unitframe.colors.power.RAGE"] = { r = 0.54, g = 0.18, b = 0.13 },
-  ["general.backdropcolor"] = { r = 0.008, g = 0.016, b = 0.014 },
-  ["general.bordercolor"] = { r = 0.67, g = 0.55, b = 0.32 },
-  ["general.valuecolor"] = { r = 0.78, g = 0.65, b = 0.39 },
+  ["unitframe.colors.health"] = { r = 0.056, g = 0.168, b = 0.123 },
+  ["unitframe.colors.health_backdrop"] = { r = 0.007, g = 0.015, b = 0.013 },
+  ["unitframe.colors.power.MANA"] = { r = 0.085, g = 0.245, b = 0.31 },
+  ["unitframe.colors.power.ENERGY"] = { r = 0.62, g = 0.48, b = 0.17 },
+  ["unitframe.colors.power.RAGE"] = { r = 0.50, g = 0.16, b = 0.12 },
+  ["general.backdropcolor"] = { r = 0.007, g = 0.014, b = 0.012 },
+  ["general.bordercolor"] = { r = 0.70, g = 0.58, b = 0.34 },
+  ["general.valuecolor"] = { r = 0.80, g = 0.68, b = 0.40 },
 
   ["actionbar.fontSize"] = 10,
   ["actionbar.bar1.buttonsize"] = 34,
@@ -83,8 +83,8 @@ local settings = {
   ["actionbar.bar2.buttons"] = 10,
   ["actionbar.bar3.enabled"] = false,
 
-  ["chat.panelWidth"] = 320,
-  ["chat.panelHeight"] = 132,
+  ["chat.panelWidth"] = 305,
+  ["chat.panelHeight"] = 126,
   ["chat.fontSize"] = 10,
   ["cooldown.fontSize"] = 12,
 }
@@ -161,8 +161,14 @@ local function QuietRuntime()
     HideFrame(frameName)
   end
 
-  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 14, 16, 320, 132)
-  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -14, 16, 310, 130)
+  -- Force the two real action bars into the same visual center even if this
+  -- ElvUI build ignores one of the legacy mover names.
+  Move(_G.ElvUI_Bar1, "BOTTOM", "BOTTOM", 0, 44)
+  Move(_G.ElvUI_Bar2, "BOTTOM", "BOTTOM", 0, 82)
+  HideFrame("ElvUI_Bar3")
+
+  Move(_G.ChatFrame1, "BOTTOMLEFT", "BOTTOMLEFT", 12, 14, 305, 126)
+  Move(_G.DetailsBaseFrame1, "BOTTOMRIGHT", "BOTTOMRIGHT", -12, 14, 300, 124)
 end
 
 local function ApplyVision()
