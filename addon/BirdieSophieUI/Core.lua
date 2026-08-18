@@ -2,8 +2,8 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.17.0"
-BSUI.build = "STANCE-LINE-20260818-A"
+BSUI.version = "0.19.0"
+BSUI.build = "SIGNATURE-REFINE-20260818-A"
 BSUI.display = {
   width = nil,
   height = nil,
