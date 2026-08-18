@@ -1,8 +1,8 @@
 ## Interface: 20505
 ## Title: BirdieSophieUI
-## Notes: TeeBuilder Night Luxury Hero System for Birdie & Breakfast
+## Notes: TeeBuilder Quiet Luxury for Birdie & Breakfast
 ## Author: Birdie & Breakfast
-## Version: 0.31.0
+## Version: 0.40.0
 ## RequiredDeps: ElvUI
 ## OptionalDeps: WeakAuras, Details
 ## SavedVariables: BirdieSophieUIDB
@@ -22,3 +22,4 @@ Alerts.lua
 Vision.lua
 Hero.lua
 HeroHUD.lua
+QuietLuxury.lua
