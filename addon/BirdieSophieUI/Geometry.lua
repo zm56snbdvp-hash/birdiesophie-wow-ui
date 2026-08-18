@@ -1,25 +1,20 @@
 local addonName, BSUI = ...
 
--- v0.7.1 live-screenshot refinement for the confirmed 3440x1440 layout.
+-- v0.8 design-core geometry for the confirmed 3440x1440 layout.
 -- Keep the character sightline open and separate primary unit frames, compact
 -- command information, aura scorecards and action bars into distinct bands.
 
-local GEOMETRY_ID = "deep-clubhouse-3440x1440-v7"
+local GEOMETRY_ID = "deep-clubhouse-3440x1440-v8"
 
 local measuredMovers = {
-  -- Primary unit frames: mirrored farther apart, like the approved reference.
   ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-520,360",
   ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,520,360",
-
-  -- Supporting frames stay peripheral to the player/target pair.
   ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-760,360",
   ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,760,360",
 
-  -- Cast information sits above the primary unit-frame band.
   ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-520,470",
   ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,470",
 
-  -- Bottom hierarchy: two main action rows plus one compact utility/form row.
   ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,92",
   ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,152",
   ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,212",
@@ -29,17 +24,10 @@ local measuredMovers = {
 }
 
 local runtimeFrames = {
-  -- Compact Command Deck centered between the unit frames and action rows.
-  BirdieSophieCombatCore = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 286 },
-
-  -- Symmetric aura cards above the player/target frames.
+  BirdieSophieCombatCore = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 282 },
   BirdieSophiePlayerHots = { point = "BOTTOM", relative = "BOTTOM", x = -520, y = 500 },
   BirdieSophieTargetDebuffs = { point = "BOTTOM", relative = "BOTTOM", x = 520, y = 500 },
-
-  -- Contextual mouseover stays centered but above the unit-frame band.
   BirdieSophieMouseoverCaddie = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 430 },
-
-  -- Peripheral telemetry and bottom utility remain out of the combat sightline.
   BirdieSophieLevelCaddie = { point = "BOTTOMRIGHT", relative = "BOTTOMRIGHT", x = -38, y = 314 },
   BirdieSophieUtilityBag = { point = "BOTTOM", relative = "BOTTOM", x = 0, y = 10 },
 }
@@ -103,7 +91,7 @@ if type(originalApply) == "function" then
     if not ok then return false end
 
     local changed, runtimeMoved = ApplyMeasuredGeometry()
-    Print(string.format("BirdieTee v0.7.1 geometry applied to %d ElvUI movers and %d runtime frames.", changed, runtimeMoved))
+    Print(string.format("BirdieTee v0.8 design geometry applied to %d ElvUI movers and %d runtime frames.", changed, runtimeMoved))
     return true
   end
 end
