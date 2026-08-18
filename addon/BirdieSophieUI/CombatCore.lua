@@ -18,11 +18,8 @@ local pvpTrinketIds = {
 }
 
 local trackedBuffs = {
-  [22812] = "BARK",
-  [17116] = "SWIFT",
-  [29166] = "INNERVATE",
-  [1850] = "DASH",
-  [9821] = "DASH",
+  [22812] = "BARK", [17116] = "SWIFT", [29166] = "INNERVATE",
+  [1850] = "DASH", [9821] = "DASH",
 }
 
 local trackedHots = {
@@ -55,9 +52,7 @@ local function IsReady(spellId)
 end
 
 local function ReadyRank(ids)
-  for _, spellId in ipairs(ids) do
-    if Known(spellId) then return IsReady(spellId) end
-  end
+  for _, spellId in ipairs(ids) do if Known(spellId) then return IsReady(spellId) end end
   return false
 end
 
@@ -107,12 +102,9 @@ local function CreateRail(owner, point, x, y, width)
   rail:SetPoint(point, owner, point, x, y)
   rail:SetSize(width, 3)
   local track = rail:CreateTexture(nil, "BACKGROUND")
-  track:SetAllPoints()
-  track:SetColorTexture(Color("graphite", 0.88))
+  track:SetAllPoints(); track:SetColorTexture(Color("graphite", 0.88))
   rail.fill = rail:CreateTexture(nil, "ARTWORK")
-  rail.fill:SetPoint("TOPLEFT")
-  rail.fill:SetPoint("BOTTOMLEFT")
-  rail.fill:SetWidth(width)
+  rail.fill:SetPoint("TOPLEFT"); rail.fill:SetPoint("BOTTOMLEFT"); rail.fill:SetWidth(width)
   rail.width = width
   return rail
 end
@@ -188,22 +180,24 @@ local function Build()
   hotFrame.text = Art.CreateText(hotFrame, "OVERLAY", 11, "numbers", "OUTLINE")
   hotFrame.text:SetPoint("TOPLEFT", hotFrame, "TOPLEFT", 16, -34)
   hotFrame.text:SetPoint("BOTTOMRIGHT", hotFrame, "BOTTOMRIGHT", -16, 10)
-  hotFrame.text:SetJustifyH("LEFT")
-  hotFrame.text:SetJustifyV("TOP")
+  hotFrame.text:SetJustifyH("LEFT"); hotFrame.text:SetJustifyV("TOP")
   hotFrame:Hide()
 end
 
 local function Update(state)
   Build()
   local enabled = BSUI.IsModuleEnabled and BSUI.IsModuleEnabled("core")
-  frame:SetShown(enabled)
-  if not enabled then stealthFrame:Hide(); hotFrame:Hide(); return end
+  local contextual = state.inCombat or state.targetExists or state.stealth
+  frame:SetShown(enabled and contextual)
+  if not enabled or not contextual then
+    stealthFrame:Hide(); hotFrame:Hide(); return
+  end
 
-  frame:SetAlpha(state.stealth and 0.74 or (state.inCombat and 0.98 or 0.80))
+  frame:SetAlpha(state.stealth and 0.74 or 0.98)
   local hp = Percent(state.health, state.healthMax)
   frame.player:SetText(string.format("BIRDIETEE  %d%%", hp))
   frame.resource:SetText(string.format("MANA %d%%   •   %s", Percent(state.mana, state.manaMax), state.powerToken or "POWER"))
-  frame.target:SetText(state.targetExists and "TARGET" or "NO TARGET")
+  frame.target:SetText(state.targetExists and "TARGET" or "")
   local targetHP = state.targetExists and Percent(state.targetHealth, state.targetHealthMax) or 0
   frame.targetHealth:SetText(state.targetExists and string.format("%d%%", targetHP) or "")
   SetRail(frame.playerRail, hp, hp <= 30 and "danger" or "forest")
@@ -216,9 +210,7 @@ local function Update(state)
   end
 
   local ready, active = {}, ActiveBuffs()
-  for _, cooldown in ipairs(cooldowns) do
-    if ReadyRank(cooldown.ids) then ready[#ready + 1] = cooldown.short end
-  end
+  for _, cooldown in ipairs(cooldowns) do if ReadyRank(cooldown.ids) then ready[#ready + 1] = cooldown.short end end
   if TrinketReady() then ready[#ready + 1] = "TRINKET" end
   local status = {}
   if #active > 0 then status[#status + 1] = table.concat(active, " • ") end
@@ -226,21 +218,14 @@ local function Update(state)
   frame.ready:SetText(table.concat(status, "     "))
 
   local hots = ActiveHots()
-  hotFrame:SetShown(#hots > 0)
+  hotFrame:SetShown(#hots > 0 and (state.inCombat or state.targetExists))
   hotFrame.text:SetText(table.concat(hots, "\n"))
 
   if frame.gcd.SetCooldown then
-    if state.gcdDuration and state.gcdDuration > 0 then
-      frame.gcd:SetCooldown(state.gcdStart, state.gcdDuration)
-      frame.gcd:Show()
-    else
-      frame.gcd:Hide()
-    end
+    if state.gcdDuration and state.gcdDuration > 0 then frame.gcd:SetCooldown(state.gcdStart, state.gcdDuration); frame.gcd:Show() else frame.gcd:Hide() end
   end
   stealthFrame:SetShown(BSUI.IsModuleEnabled("stealth") and state.stealth)
 end
 
 if BSUI.RegisterStateListener then BSUI.RegisterStateListener(Update) end
-if BSUI.RegisterModuleRefresh then
-  BSUI.RegisterModuleRefresh(function() if BSUI.RefreshState then BSUI.RefreshState() end end)
-end
+if BSUI.RegisterModuleRefresh then BSUI.RegisterModuleRefresh(function() if BSUI.RefreshState then BSUI.RefreshState() end end) end
