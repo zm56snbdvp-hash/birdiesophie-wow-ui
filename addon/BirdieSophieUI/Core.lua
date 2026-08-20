@@ -2,7 +2,9 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.6.0"
+-- Core owns version/build. Leaf visual modules must not overwrite these values.
+BSUI.version = "0.45.0"
+BSUI.build = "QUIET-HARDENING-20260820-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -28,37 +30,24 @@ frame:RegisterEvent("PLAYER_LOGIN")
 local function Print(message)
   local gold = "|cFFC7A763"
   local cream = "|cFFF0EAD6"
-  DEFAULT_CHAT_FRAME:AddMessage(gold .. "BirdieSophie|r " .. cream .. message .. "|r")
+  DEFAULT_CHAT_FRAME:AddMessage(gold .. "TeeBuilder|r " .. cream .. message .. "|r")
 end
 
 BSUI.Print = Print
 
 local function IsLoaded(name)
-  if C_AddOns and C_AddOns.IsAddOnLoaded then
-    return C_AddOns.IsAddOnLoaded(name)
-  end
-
+  if C_AddOns and C_AddOns.IsAddOnLoaded then return C_AddOns.IsAddOnLoaded(name) end
   return IsAddOnLoaded(name)
 end
 
 local function DependencyState()
-  return {
-    ElvUI = IsLoaded("ElvUI"),
-    WeakAuras = IsLoaded("WeakAuras"),
-    Details = IsLoaded("Details"),
-  }
+  return { ElvUI = IsLoaded("ElvUI"), WeakAuras = IsLoaded("WeakAuras"), Details = IsLoaded("Details") }
 end
 
 local function ReadResolutionCVar(name)
-  if type(GetCVar) ~= "function" then
-    return nil, nil
-  end
-
+  if type(GetCVar) ~= "function" then return nil, nil end
   local ok, value = pcall(GetCVar, name)
-  if not ok or type(value) ~= "string" then
-    return nil, nil
-  end
-
+  if not ok or type(value) ~= "string" then return nil, nil end
   local width, height = string.match(value, "(%d+)%D+(%d+)")
   return tonumber(width), tonumber(height)
 end
@@ -66,20 +55,11 @@ end
 local function PhysicalScreenSize()
   if type(GetPhysicalScreenSize) == "function" then
     local width, height = GetPhysicalScreenSize()
-    if width and height and width > 0 and height > 0 then
-      return width, height, "physical API"
-    end
+    if width and height and width > 0 and height > 0 then return width, height, "physical API" end
   end
-
   local width, height = ReadResolutionCVar("gxWindowedResolution")
-  if not width or not height then
-    width, height = ReadResolutionCVar("gxResolution")
-  end
-
-  if width and height then
-    return width, height, "graphics CVar"
-  end
-
+  if not width or not height then width, height = ReadResolutionCVar("gxResolution") end
+  if width and height then return width, height, "graphics CVar" end
   return nil, nil, "UI fallback"
 end
 
@@ -87,7 +67,6 @@ local function RefreshDisplayState()
   local physicalWidth, physicalHeight, source = PhysicalScreenSize()
   local uiWidth, uiHeight = UIParent:GetSize()
   local effectiveScale = UIParent:GetEffectiveScale()
-
   BSUI.display.width = physicalWidth or math.floor((uiWidth * effectiveScale) + 0.5)
   BSUI.display.height = physicalHeight or math.floor((uiHeight * effectiveScale) + 0.5)
   BSUI.display.uiWidth = uiWidth
@@ -95,24 +74,18 @@ local function RefreshDisplayState()
   BSUI.display.effectiveScale = effectiveScale
   BSUI.display.source = source
   BSUI.display.provisional = physicalWidth == nil or physicalHeight == nil
-
   BirdieSophieUIDB.lastDisplay = {
-    width = BSUI.display.width,
-    height = BSUI.display.height,
-    uiWidth = uiWidth,
-    uiHeight = uiHeight,
-    effectiveScale = effectiveScale,
-    source = source,
+    width = BSUI.display.width, height = BSUI.display.height,
+    uiWidth = uiWidth, uiHeight = uiHeight,
+    effectiveScale = effectiveScale, source = source,
     provisional = BSUI.display.provisional,
   }
-
   return BSUI.display
 end
 
 local function ShowScreen()
   local display = RefreshDisplayState()
   local aspect = display.height > 0 and (display.width / display.height) or 0
-
   Print(string.format("Screen: %dx%d (%s)%s", display.width, display.height, display.source, display.provisional and " — provisional" or ""))
   Print(string.format("UIParent: %.0fx%.0f, effective scale %.3f, aspect %.3f:1", display.uiWidth, display.uiHeight, display.effectiveScale, aspect))
 end
@@ -120,9 +93,17 @@ end
 local function ShowStatus()
   local deps = DependencyState()
   local display = RefreshDisplayState()
-  Print("UI v" .. BSUI.version .. " — WELCOME TO THE CLUBHOUSE.")
+  Print("UI v" .. BSUI.version .. " — build " .. BSUI.build)
   Print("Canvas: " .. display.width .. "x" .. display.height .. (display.provisional and " (provisional)" or "") .. " via " .. display.source)
   Print("ElvUI: " .. (deps.ElvUI and "ready" or "missing") .. ", WeakAuras: " .. (deps.WeakAuras and "ready" or "missing") .. ", Details!: " .. (deps.Details and "ready" or "missing"))
+  Print("Pipeline: Luxury + Chrome + Details + States")
+end
+
+local function RefreshQuiet()
+  if BSUI.ApplyQuietLuxury then BSUI.ApplyQuietLuxury() end
+  if BSUI.ApplyQuietChrome then BSUI.ApplyQuietChrome() end
+  if BSUI.ApplyQuietDetails then BSUI.ApplyQuietDetails() end
+  if BSUI.ApplyQuietStates then BSUI.ApplyQuietStates() end
 end
 
 SLASH_BIRDIESOPHIEUI1 = "/bsui"
@@ -130,73 +111,30 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
   local input = string.lower(strtrim(message or ""))
   local command, arguments = string.match(input, "^(%S+)%s*(.-)$")
   command = command or ""
-  if command == "" or command == "status" then
-    ShowStatus()
-    return
-  end
-
-  if command == "screen" then
-    ShowScreen()
-    return
-  end
-
-  if command == "preview" and BSUI.ToggleLayoutPreview then
-    BSUI.ToggleLayoutPreview()
-    return
-  end
-
-  if command == "apply" and BSUI.ApplyClubhouseLayout then
-    BSUI.ApplyClubhouseLayout()
-    return
-  end
-
-  if command == "restore" and BSUI.RestorePreviousLayout then
-    BSUI.RestorePreviousLayout()
-    return
-  end
-
-  if command == "install" and BSUI.InstallClubhouse then
-    BSUI.InstallClubhouse()
-    return
-  end
-
-  if command == "theme" and BSUI.ToggleClubhouseTheme then
-    BSUI.ToggleClubhouseTheme()
-    return
-  end
-
-  if command == "alerttest" and BSUI.TestAlert then
-    BSUI.TestAlert()
-    return
-  end
-
-  if command == "modules" and BSUI.ShowModules then
-    BSUI.ShowModules()
-    return
-  end
-
-  if command == "module" and BSUI.ModuleCommand then
-    BSUI.ModuleCommand(arguments)
-    return
-  end
-
-  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest")
+  if command == "" or command == "status" then ShowStatus(); return end
+  if command == "screen" then ShowScreen(); return end
+  if command == "preview" and BSUI.ToggleLayoutPreview then BSUI.ToggleLayoutPreview(); return end
+  if command == "apply" and BSUI.ApplyClubhouseLayout then BSUI.ApplyClubhouseLayout(); return end
+  if command == "restore" and BSUI.RestorePreviousLayout then BSUI.RestorePreviousLayout(); return end
+  if command == "install" and BSUI.InstallClubhouse then BSUI.InstallClubhouse(); return end
+  if command == "theme" and BSUI.ToggleClubhouseTheme then BSUI.ToggleClubhouseTheme(); return end
+  if command == "alerttest" and BSUI.TestAlert then BSUI.TestAlert(); return end
+  if command == "modules" and BSUI.ShowModules then BSUI.ShowModules(); return end
+  if command == "module" and BSUI.ModuleCommand then BSUI.ModuleCommand(arguments); return end
+  if command == "hero" or command == "quiet" then RefreshQuiet(); Print("Quiet Luxury refreshed."); return end
+  if command == "doctor" and BSUI.RunDoctor then BSUI.RunDoctor(); return end
+  Print("Commands: /bsui status, screen, quiet, doctor, install, preview, apply, restore, theme, modules, module, alerttest")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
   if event == "ADDON_LOADED" and loadedAddon == addonName then
     BirdieSophieUIDB.version = BSUI.version
-    if BSUI.InitializeModules then
-      BSUI.InitializeModules()
-    end
+    BirdieSophieUIDB.build = BSUI.build
+    if BSUI.InitializeModules then BSUI.InitializeModules() end
     RefreshDisplayState()
   elseif event == "PLAYER_LOGIN" then
-    if BSUI.InitializeModules then
-      BSUI.InitializeModules()
-    end
-    if BSUI.InitializeLayout then
-      BSUI.InitializeLayout()
-    end
-    Print("NEXT TEE → /bsui install")
+    if BSUI.InitializeModules then BSUI.InitializeModules() end
+    if BSUI.InitializeLayout then BSUI.InitializeLayout() end
+    Print("QUIET LUXURY v" .. BSUI.version .. " ONLINE → /bsui doctor")
   end
 end)

@@ -1,8 +1,8 @@
 ## Interface: 20505
 ## Title: BirdieSophieUI
-## Notes: Birdie & Breakfast interface companion for Birdiesophie
+## Notes: TeeBuilder Quiet Luxury System for Birdie & Breakfast
 ## Author: Birdie & Breakfast
-## Version: 0.7.0
+## Version: 0.45.0
 ## RequiredDeps: ElvUI
 ## OptionalDeps: WeakAuras, Details
 ## SavedVariables: BirdieSophieUIDB
@@ -19,3 +19,10 @@ Mouseover.lua
 Leveling.lua
 Bag.lua
 Alerts.lua
+Vision.lua
+QuietLuxury.lua
+QuietChrome.lua
+QuietDetails.lua
+QuietStates.lua
+BuildStamp.lua
+Diagnostics.lua

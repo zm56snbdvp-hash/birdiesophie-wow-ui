@@ -6,7 +6,7 @@ local defaults = {
   stealth = true,
   leveling = true,
   caddie = true,
-  bag = true,
+  bag = false,
 }
 
 local aliases = {
@@ -20,32 +20,30 @@ local aliases = {
 local listeners = {}
 
 local function Print(message)
-  if BSUI.Print then
-    BSUI.Print(message)
-  end
+  if BSUI.Print then BSUI.Print(message) end
 end
 
 function BSUI.InitializeModules()
   BirdieSophieUIDB.modules = BirdieSophieUIDB.modules or {}
   for name, enabled in pairs(defaults) do
-    if BirdieSophieUIDB.modules[name] == nil then
-      BirdieSophieUIDB.modules[name] = enabled
-    end
+    if BirdieSophieUIDB.modules[name] == nil then BirdieSophieUIDB.modules[name] = enabled end
   end
+
+  -- v0.8.1 Quiet Clubhouse migration: the utility Bag is no longer part of the
+  -- default visual load. Existing users get the quieter baseline once; they can
+  -- opt back in at any time with /bsui module bag on.
+  if not BirdieSophieUIDB.quietClubhouseV1 then
+    BirdieSophieUIDB.modules.bag = false
+    BirdieSophieUIDB.quietClubhouseV1 = true
+  end
+
   if BirdieSophieUIDB.runtimeActive == nil then
     BirdieSophieUIDB.runtimeActive = BirdieSophieUIDB.themeEnabled ~= false
   end
 end
 
-function BSUI.RegisterModuleRefresh(callback)
-  listeners[#listeners + 1] = callback
-end
-
-function BSUI.RefreshModules()
-  for _, callback in ipairs(listeners) do
-    pcall(callback)
-  end
-end
+function BSUI.RegisterModuleRefresh(callback) listeners[#listeners + 1] = callback end
+function BSUI.RefreshModules() for _, callback in ipairs(listeners) do pcall(callback) end end
 
 function BSUI.IsModuleEnabled(name)
   BSUI.InitializeModules()
@@ -62,9 +60,7 @@ end
 function BSUI.SetModuleEnabled(name, enabled)
   BSUI.InitializeModules()
   name = aliases[name] or name
-  if defaults[name] == nil then
-    return false
-  end
+  if defaults[name] == nil then return false end
   BirdieSophieUIDB.modules[name] = enabled and true or false
   BSUI.RefreshModules()
   return true
@@ -86,9 +82,7 @@ function BSUI.ModuleCommand(arguments)
     Print("Module: core, mouseover, stealth, leveling, caddie or bag.")
     return
   end
-  if mode == "" or mode == "toggle" then
-    mode = BirdieSophieUIDB.modules[name] and "off" or "on"
-  end
+  if mode == "" or mode == "toggle" then mode = BirdieSophieUIDB.modules[name] and "off" or "on" end
   if mode ~= "on" and mode ~= "off" then
     Print("Usage: /bsui module " .. name .. " on|off|toggle")
     return
@@ -96,4 +90,3 @@ function BSUI.ModuleCommand(arguments)
   BSUI.SetModuleEnabled(name, mode == "on")
   Print(name .. " module " .. mode .. ".")
 end
-
