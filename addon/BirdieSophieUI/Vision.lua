@@ -1,9 +1,6 @@
 local addonName, BSUI = ...
 
-BSUI.version = "0.44.0"
-BSUI.build = "QUIET-PIPELINE-20260818-A"
-
-local VISION_ID = "teebuilder-quiet-pipeline-v1"
+local VISION_ID = "teebuilder-quiet-hardened-v2"
 
 local moverPositions = {
   ElvAB_1 = "BOTTOM,ElvUIParent,BOTTOM,0,34",
@@ -94,6 +91,7 @@ local function RuntimeCleanup()
   BirdieSophieUIDB.themeEnabled = false
   if BSUI.RefreshClubhouseTheme then pcall(BSUI.RefreshClubhouseTheme) end
   if BSUI.SetRuntimeActive then BSUI.SetRuntimeActive(true) end
+
   BirdieSophieUIDB.modules = BirdieSophieUIDB.modules or {}
   BirdieSophieUIDB.modules.core = false
   BirdieSophieUIDB.modules.mouseover = false
