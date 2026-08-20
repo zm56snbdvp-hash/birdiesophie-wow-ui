@@ -2,8 +2,9 @@ local addonName, BSUI = ...
 
 BirdieSophieUIDB = BirdieSophieUIDB or {}
 
-BSUI.version = "0.44.0"
-BSUI.build = "QUIET-PIPELINE-20260818-A"
+-- Core owns version/build. Leaf visual modules must not overwrite these values.
+BSUI.version = "0.45.0"
+BSUI.build = "QUIET-HARDENING-20260820-A"
 BSUI.display = {
   width = nil,
   height = nil,
@@ -95,6 +96,7 @@ local function ShowStatus()
   Print("UI v" .. BSUI.version .. " — build " .. BSUI.build)
   Print("Canvas: " .. display.width .. "x" .. display.height .. (display.provisional and " (provisional)" or "") .. " via " .. display.source)
   Print("ElvUI: " .. (deps.ElvUI and "ready" or "missing") .. ", WeakAuras: " .. (deps.WeakAuras and "ready" or "missing") .. ", Details!: " .. (deps.Details and "ready" or "missing"))
+  Print("Pipeline: Luxury + Chrome + Details + States")
 end
 
 local function RefreshQuiet()
@@ -120,7 +122,8 @@ SlashCmdList.BIRDIESOPHIEUI = function(message)
   if command == "modules" and BSUI.ShowModules then BSUI.ShowModules(); return end
   if command == "module" and BSUI.ModuleCommand then BSUI.ModuleCommand(arguments); return end
   if command == "hero" or command == "quiet" then RefreshQuiet(); Print("Quiet Luxury refreshed."); return end
-  Print("Commands: /bsui install, status, screen, preview, apply, restore, theme, modules, module, alerttest, hero, quiet")
+  if command == "doctor" and BSUI.RunDoctor then BSUI.RunDoctor(); return end
+  Print("Commands: /bsui status, screen, quiet, doctor, install, preview, apply, restore, theme, modules, module, alerttest")
 end
 
 frame:SetScript("OnEvent", function(_, event, loadedAddon)
@@ -132,6 +135,6 @@ frame:SetScript("OnEvent", function(_, event, loadedAddon)
   elseif event == "PLAYER_LOGIN" then
     if BSUI.InitializeModules then BSUI.InitializeModules() end
     if BSUI.InitializeLayout then BSUI.InitializeLayout() end
-    Print("QUIET PIPELINE ONLINE → /bsui status")
+    Print("QUIET LUXURY v" .. BSUI.version .. " ONLINE → /bsui doctor")
   end
 end)
