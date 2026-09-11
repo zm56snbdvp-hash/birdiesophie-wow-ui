@@ -1,8 +1,8 @@
 ## Interface: 120100
 ## Author: BirdieWorld
-## Version: 0.2.0
+## Version: 0.3.0
 ## Title: |cff20e090ElvUI|r |cffd2aa40Birdie Retail - THE NEST|r
-## Notes: BirdieWorld Retail ElvUI ultrawide layout installer.
+## Notes: BirdieWorld THE NEST V3 visual identity for 3840x1080 Retail.
 ## RequiredDeps: ElvUI
 ## DefaultState: enabled
 
