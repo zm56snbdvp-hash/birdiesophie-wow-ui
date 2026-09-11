@@ -1,0 +1,9 @@
+## Interface: 120100
+## Author: BirdieWorld
+## Version: 0.1.0
+## Title: |cff20e090ElvUI|r |cffd2aa40Birdie Retail - THE NEST|r
+## Notes: BirdieWorld Retail ElvUI layout installer for 3840x1080.
+## RequiredDeps: ElvUI
+## DefaultState: enabled
+
+Core.lua
